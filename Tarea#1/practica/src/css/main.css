@@ -1,0 +1,234 @@
+/* Variables CSS */
+:root {
+  --primary-color: #3498db;
+  --primary-hover: #2980b9;
+  --secondary-color: #2ecc71;
+  --text-color: #333;
+  --bg-color: #f5f5f5;
+  --white: #fff;
+  --border-radius: 8px;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  --spacing: 3rem;
+}
+
+/* Reseteo de estilos base */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--bg-color);
+}
+
+/* Header */
+header {
+  background-color: var(--primary-color);
+  padding: 2rem;
+  box-shadow: var(--shadow);
+}
+
+/* Main */
+main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+/* Secciones - Separación clara entre ellas */
+section {
+  background-color: var(--white);
+  padding: 2rem;
+  margin-bottom: var(--spacing);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+section h1 {
+  color: var(--primary-color);
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+section h2 {
+  color: var(--text-color);
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+section p {
+  margin-bottom: 1rem;
+  text-align: justify;
+}
+
+/* Tabla de productos */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1.5rem;
+}
+
+thead {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+th,
+td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+tbody tr:hover {
+  background-color: var(--bg-color);
+}
+
+/* Tarjeta de Perfil */
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background-color: var(--bg-color);
+  border-radius: var(--border-radius);
+  transition: background-color 0.3s;
+}
+
+.profile-card:hover {
+  background-color: var(--primary-color);
+  color: var(--white);
+}
+
+.profile-card:hover h2 {
+  color: var(--white);
+}
+
+.profile-image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  border: 4px solid var(--white);
+  box-shadow: var(--shadow);
+}
+
+.profile-name {
+  margin-bottom: 0.5rem;
+}
+
+.profile-bio {
+  text-align: center;
+  max-width: 400px;
+}
+
+/* Contador Interactivo */
+.counter-section {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.counter-section button {
+  background-color: var(--primary-color);
+  color: var(--white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.5rem;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.counter-section button:hover {
+  background-color: var(--primary-hover);
+}
+
+#counterValue {
+  display: inline-block;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 1.5rem;
+  min-width: 10rem;
+}
+
+/* Buscador de Palabras */
+.search-section {
+  margin-top: 2rem;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 2px solid #ddd;
+  border-radius: var(--border-radius);
+  margin-bottom: 1rem;
+  transition: border-color 0.3s;
+}
+
+#searchInput:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
+#wordList {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+#wordList li {
+  background-color: var(--secondary-color);
+  color: var(--white);
+  padding: 0.5rem 1rem;
+  border-radius: var(--border-radius);
+  transition: opacity 0.3s;
+}
+
+#wordList li.hidden {
+  display: none;
+}
+
+/* Footer */
+footer {
+  background-color: var(--text-color);
+  padding: 2rem;
+  margin-top: var(--spacing);
+  text-align: center;
+  color: var(--white);
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  main {
+    padding: 1rem;
+  }
+
+  section {
+    padding: 1.5rem;
+  }
+
+  section h1 {
+    font-size: 1.5rem;
+  }
+
+  table {
+    font-size: 0.9rem;
+  }
+
+  th,
+  td {
+    padding: 0.5rem;
+  }
+
+  .profile-image {
+    width: 120px;
+    height: 120px;
+  }
+}

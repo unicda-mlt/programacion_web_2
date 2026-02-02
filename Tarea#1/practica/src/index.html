@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tarea #1</title>
+        <link rel="stylesheet" href="./css/main.css" />
+    </head>
+    <body>
+        <header></header>
+
+        <main>
+            <!--
+              Ejercicio 1: Estructura y Datos (HTML + XML)
+              Objetivo: Diferenciar entre etiquetas para mostrar información (HTML) y etiquetas para almacenar datos (XML).
+              Actividad: Crear un archivo productos.xml con un inventario y un index.html que explique qué es cada tecnología.
+            -->
+            <section>
+              <h1>XML vs HTML</h1>
+
+              <p>
+                XML (eXtensible Markup Language) es un lenguaje de marcado diseñado para almacenar y transportar datos, permitiendo a los usuarios
+                definir sus propias etiquetas y estructuras. HTML (HyperText Markup Language), por otro lado, es un lenguaje de marcado utilizado
+                para crear y diseñar páginas web, con un conjunto predefinido de etiquetas que estructuran el contenido visualizado en navegadores.
+              </p>
+
+              <p>
+                Por ejemplo, en XML podríamos tener un archivo que almacene información sobre productos; debajo hay un ejemplo de un archivo XML que contiene
+                una lista de productos.
+              </p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Categoria</th>
+                    <th>Stock</th>
+                  </tr>
+                </thead>
+                <tbody id="products-table-body"></tbody>
+              </table>
+            </section>
+
+            <!--
+              Ejercicio 2: Diseño y Estilo (CSS Moderno)
+              Objetivo: Dominar el layout sin tablas, usando Flexbox y variables.
+              Actividad: Crear una "Tarjeta de Perfil" responsiva que cambie de color al pasar el mouse.
+            -->
+            <section>
+              <h1>Tarjeta de Perfil</h1>
+
+              <div class="profile-card">
+                <img src="./assets/profile-image.jpg" alt="Foto de Perfil" class="profile-image" />
+                <h2 class="profile-name">Juan Pérez</h2>
+                <p class="profile-bio">Desarrollador Web apasionado por crear experiencias digitales increíbles.</p>
+              </div>
+            </section>
+
+            <!--
+              Ejercicio 3:  Lógica (JavaScript Moderno)
+              Objetivo: Reemplazar jQuery por funciones nativas y manejo de eventos.
+              Actividad: Crear un contador interactivo y un buscador que filtre palabras en una lista.
+            -->
+            <section>
+              <h1>Contador Interactivo y Buscador de Palabras</h1>
+
+              <div class="counter-section">
+                <h2>Contador Interactivo</h2>
+                <button id="btnDecrement">-</button>
+                <span id="counterValue">0</span>
+                <button id="btnIncrement">+</button>
+              </div>
+
+              <div class="search-section">
+                <h2>Buscador de Palabras</h2>
+                <input type="text" id="searchInput" placeholder="Buscar palabra..." />
+                <ul id="wordList">
+                  <li>JavaScript</li>
+                  <li>HTML</li>
+                  <li>CSS</li>
+                  <li>XML</li>
+                  <li>JSON</li>
+                  <li>React</li>
+                  <li>Node.js</li>
+                </ul>
+              </div>
+            </section>
+        </main>
+
+        <footer></footer>
+
+        <script src="./js/main.js" type="module"></script>
+    </body>
+</html>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE productos SYSTEM "productos.dtd">
+<productos>
+    <producto id="1">
+        <nombre>Laptop HP Pavilion</nombre>
+        <descripcion>Laptop con procesador Intel Core i5, 8GB RAM, 256GB SSD</descripcion>
+        <precio>699.99</precio>
+        <categoria>Electrónica</categoria>
+        <stock>15</stock>
+    </producto>
+    <producto id="2">
+        <nombre>Mouse Logitech MX Master</nombre>
+        <descripcion>Mouse inalámbrico ergonómico con sensor de alta precisión</descripcion>
+        <precio>89.99</precio>
+        <categoria>Accesorios</categoria>
+        <stock>50</stock>
+    </producto>
+    <producto id="3">
+        <nombre>Teclado Mecánico Corsair</nombre>
+        <descripcion>Teclado mecánico RGB con switches Cherry MX</descripcion>
+        <precio>129.99</precio>
+        <categoria>Accesorios</categoria>
+        <stock>30</stock>
+    </producto>
+    <producto id="4">
+        <nombre>Monitor Samsung 27"</nombre>
+        <descripcion>Monitor Full HD 27 pulgadas, 75Hz, panel IPS</descripcion>
+        <precio>249.99</precio>
+        <categoria>Electrónica</categoria>
+        <stock>20</stock>
+    </producto>
+    <producto id="5">
+        <nombre>Webcam Logitech C920</nombre>
+        <descripcion>Cámara web Full HD 1080p con micrófono integrado</descripcion>
+        <precio>79.99</precio>
+        <categoria>Accesorios</categoria>
+        <stock>40</stock>
+    </producto>
+    <producto id="6">
+        <nombre>Auriculares Sony WH-1000XM4</nombre>
+        <descripcion>Auriculares inalámbricos con cancelación de ruido activa</descripcion>
+        <precio>349.99</precio>
+        <categoria>Audio</categoria>
+        <stock>25</stock>
+    </producto>
+</productos>
