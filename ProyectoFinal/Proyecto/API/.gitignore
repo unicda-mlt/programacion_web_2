@@ -1,0 +1,52 @@
+# Build results
+**/[Bb]in/
+**/[Oo]bj/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# NuGet packages
+*.nupkg
+**/packages/*
+**/packages/*/
+
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Rider specific
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Visual Studio profiler
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# IIS Express
+/.vs/
+**/.vs/
+**/iisexpress/
+
+# Log files
+*.log
+
+# Local history for Visual Studio Code
+.history/
+.vscode/
+
+# Multimedia files
+public/media/
