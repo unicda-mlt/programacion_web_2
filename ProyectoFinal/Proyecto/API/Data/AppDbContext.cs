@@ -54,7 +54,8 @@ namespace Data
                     Id = new Guid("bfe03e22-65e4-4007-8420-07c1b53c4726"),
                     UserRoleId = 1,
                     UserName = "admin",
-                    Password = "9U0zeOGybSi5hk81k/nFzw==.FN5jpe1k2hAMfU0SIg2QuTiwVdhsFdYsC1ykHHAwkzk="
+                    Password = "9U0zeOGybSi5hk81k/nFzw==.FN5jpe1k2hAMfU0SIg2QuTiwVdhsFdYsC1ykHHAwkzk=",
+                    Active = true
                 });
             });
 

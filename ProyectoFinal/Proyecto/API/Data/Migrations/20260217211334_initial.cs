@@ -56,7 +56,7 @@ namespace Data.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    user_id = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     registration_number = table.Column<string>(type: "nvarchar(30)", maxLength: 30, nullable: false),
                     name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     last_name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
@@ -71,8 +71,7 @@ namespace Data.Migrations
                         name: "students_fk_userid",
                         column: x => x.user_id,
                         principalTable: "users",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -109,8 +108,8 @@ namespace Data.Migrations
 
             migrationBuilder.InsertData(
                 table: "users",
-                columns: new[] { "id", "password", "updated_at", "user_name", "user_role_id" },
-                values: new object[] { new Guid("bfe03e22-65e4-4007-8420-07c1b53c4726"), "9U0zeOGybSi5hk81k/nFzw==.FN5jpe1k2hAMfU0SIg2QuTiwVdhsFdYsC1ykHHAwkzk=", null, "admin", (short)1 });
+                columns: new[] { "id", "active", "password", "updated_at", "user_name", "user_role_id" },
+                values: new object[] { new Guid("bfe03e22-65e4-4007-8420-07c1b53c4726"), true, "9U0zeOGybSi5hk81k/nFzw==.FN5jpe1k2hAMfU0SIg2QuTiwVdhsFdYsC1ykHHAwkzk=", null, "admin", (short)1 });
 
             migrationBuilder.CreateIndex(
                 name: "ix_students_user_id",

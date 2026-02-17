@@ -4,7 +4,6 @@ namespace Domain.Models
     public class UserRole: BaseEntity<short>
     {
         public string Name { get; set; } = default!;
-        public DateTime CreatedAt { get; set; } = default!;
         
         public ICollection<User> Users { get; set; } = [];
     }

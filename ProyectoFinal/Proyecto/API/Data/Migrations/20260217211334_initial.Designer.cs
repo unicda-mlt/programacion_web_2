@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260217194210_initial")]
+    [Migration("20260217211334_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -66,7 +66,7 @@ namespace Data.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
-                    b.Property<Guid>("UserId")
+                    b.Property<Guid?>("UserId")
                         .HasColumnType("uniqueidentifier")
                         .HasColumnName("user_id");
 
@@ -130,7 +130,7 @@ namespace Data.Migrations
                         new
                         {
                             Id = new Guid("bfe03e22-65e4-4007-8420-07c1b53c4726"),
-                            Active = false,
+                            Active = true,
                             CreatedAt = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Password = "9U0zeOGybSi5hk81k/nFzw==.FN5jpe1k2hAMfU0SIg2QuTiwVdhsFdYsC1ykHHAwkzk=",
                             UserName = "admin",
@@ -230,8 +230,6 @@ namespace Data.Migrations
                     b.HasOne("Domain.Models.User", "User")
                         .WithMany("Students")
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired()
                         .HasConstraintName("students_fk_userid");
 
                     b.Navigation("User");

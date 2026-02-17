@@ -5,10 +5,10 @@ using Domain.Controller.Private.Auth;
 
 namespace Business.Controllers
 {
-    public class AuthService(AuthenticationService authService, UsuarioRepository usuarioRepository)
+    public class AuthService(AuthenticationService authService, UserRepository userRepository)
     {
         private readonly AuthenticationService _authService = authService;
-        private readonly UsuarioRepository _usuarioRepository = usuarioRepository;
+        private readonly UserRepository _userRepository = userRepository;
 
         public async Task<string?> GenerateAuthUserToken (GenerateUserTokenDto data)
         {
@@ -17,20 +17,20 @@ namespace Business.Controllers
                 return null;
             }
 
-            var usuario = await _usuarioRepository.GetOneByFilter(x => x.UserName == data.UserName);
+            var user = await _userRepository.GetOneByFilter(x => x.UserName == data.UserName);
 
-            if (usuario == null) {
+            if (user == null || !user.Active) {
                 return null;
             }
 
-            var isCorrectPassword = PasswordHasher.VerifyPassword(data.Password, usuario.Password);
+            var isCorrectPassword = PasswordHasher.VerifyPassword(data.Password, user.Password);
 
             if (!isCorrectPassword)
             {
                 return null;
             }
 
-            return _authService.GenerateUserToken(usuario.Id, usuario.UserRoleId);
+            return _authService.GenerateUserToken(user.Id, user.UserRoleId);
         }
 
         public async Task<GetUserInfoResponse?> GetUserInfoResponse(string token)
@@ -41,9 +41,9 @@ namespace Business.Controllers
                 return null;
             }
 
-            var usuario = await _usuarioRepository.GetById(tokenInfo.UserId, "UserRole");
+            var user = await _userRepository.GetById(tokenInfo.UserId, "UserRole");
 
-            if (usuario == null) {
+            if (user == null) {
                 return null;
             }
 
@@ -51,10 +51,10 @@ namespace Business.Controllers
             {
                 UserRole = new()
                 {
-                    Id = usuario.UserRole.Id,
-                    Name = usuario.UserRole.Name
+                    Id = user.UserRole.Id,
+                    Name = user.UserRole.Name
                 },
-                UserName = usuario.UserName
+                UserName = user.UserName
             };
         }
     }

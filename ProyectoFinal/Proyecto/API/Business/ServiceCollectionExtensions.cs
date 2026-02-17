@@ -51,7 +51,7 @@ namespace Business
             services.AddScoped<AuthenticationService>();
             services.AddScoped<AuthService>();
             services.AddScoped<StudentRepository>();
-            services.AddScoped<UsuarioRepository>();
+            services.AddScoped<UserRepository>();
 
             return services;
         }
