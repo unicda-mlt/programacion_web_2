@@ -63,8 +63,15 @@ namespace Data.Migrations
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
 
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier")
+                        .HasColumnName("user_id");
+
                     b.HasKey("Id")
                         .HasName("pk_students");
+
+                    b.HasIndex("UserId")
+                        .HasDatabaseName("ix_students_user_id");
 
                     b.ToTable("students", (string)null);
                 });
@@ -94,10 +101,6 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(100)")
                         .HasColumnName("password");
 
-                    b.Property<Guid?>("StudentId")
-                        .HasColumnType("uniqueidentifier")
-                        .HasColumnName("student_id");
-
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2")
                         .HasColumnName("updated_at");
@@ -114,9 +117,6 @@ namespace Data.Migrations
 
                     b.HasKey("Id")
                         .HasName("pk_users");
-
-                    b.HasIndex("StudentId")
-                        .HasDatabaseName("ix_users_student_id");
 
                     b.HasIndex("UserRoleId")
                         .HasDatabaseName("ix_users_user_role_id");
@@ -222,21 +222,26 @@ namespace Data.Migrations
                     b.ToTable("user_tokens", (string)null);
                 });
 
+            modelBuilder.Entity("Domain.Models.Student", b =>
+                {
+                    b.HasOne("Domain.Models.User", "User")
+                        .WithMany("Students")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("students_fk_userid");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Domain.Models.User", b =>
                 {
-                    b.HasOne("Domain.Models.Student", "Student")
-                        .WithMany("Users")
-                        .HasForeignKey("StudentId")
-                        .HasConstraintName("users_fk_studentid");
-
                     b.HasOne("Domain.Models.UserRole", "UserRole")
                         .WithMany("Users")
                         .HasForeignKey("UserRoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
                         .HasConstraintName("users_fk_userroleid");
-
-                    b.Navigation("Student");
 
                     b.Navigation("UserRole");
                 });
@@ -253,9 +258,9 @@ namespace Data.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Domain.Models.Student", b =>
+            modelBuilder.Entity("Domain.Models.User", b =>
                 {
-                    b.Navigation("Users");
+                    b.Navigation("Students");
                 });
 
             modelBuilder.Entity("Domain.Models.UserRole", b =>
