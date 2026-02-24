@@ -1,4 +1,6 @@
-﻿using Business.Controllers;
+﻿using Business.Authentication;
+using Business.Controllers;
+using Domain.Authentication;
 using Domain.Controller.Private.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -9,9 +11,10 @@ namespace API.Controllers.Private
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class AuthController(AuthService authService) : ControllerBase
+    public class AuthController(AuthService authService, CurrentUserContext userContext) : ControllerBase
     {
         private readonly AuthService _authService = authService;
+        private readonly CurrentUserContext _userContext = userContext;
 
         [AllowAnonymous]
         [HttpPost("GenerateToken")]
@@ -37,23 +40,19 @@ namespace API.Controllers.Private
             Summary = "Obtener información del usuario",
             Description = "Recupera información sobre el usuario autenticado basado en el token proporcionado. Este endpoint requiere un token Bearer válido en el encabezado Authorization."
         )]
-        public async Task<IActionResult> GetInfoUsuario()
+        public IActionResult GetInfoUsuario()
         {
-            string? authHeader = Request.Headers.Authorization;
+            var user = _userContext.User!;
 
-            if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
+            return Ok(new GetUserInfoResponse()
             {
-                return Unauthorized();
-            }
-
-            string token = authHeader["Bearer ".Length..].Trim();
-            var data = await _authService.GetUserInfoResponse(token);
-
-            if (data == null) {
-                return Unauthorized();
-            }
-
-            return Ok(data);
+                UserName = user.UserName,
+                UserRole = new()
+                {
+                    Id = user.UserRole.Id,
+                    Name = user.UserRole.Name,
+                }
+            });
         }
     }
 }

@@ -1,4 +1,5 @@
 using API;
+using API.Middlewares;
 using Business;
 using Business.Authentication;
 using Data;
@@ -87,6 +88,17 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 var app = builder.Build();
+
+app.UseWhen(context =>
+{
+    var path = context.Request.Path;
+    
+    return path.StartsWithSegments("/api")
+        && !path.StartsWithSegments("/api/Auth/GenerateToken");
+}, appBuilder =>
+{
+    appBuilder.UseMiddleware<UserValidationMiddleware>();
+});
 
 if (storagePublicPath != null)
 {

@@ -45,13 +45,12 @@ namespace Business
                     ValidateLifetime = true
                 };
             });
-
-            IConfigurationSection envITLACredential = configuration.GetSection("ITLA_API");
             
             services.AddScoped<AuthenticationService>();
             services.AddScoped<AuthService>();
             services.AddScoped<StudentRepository>();
             services.AddScoped<UserRepository>();
+            services.AddScoped<CurrentUserContext>();
 
             return services;
         }

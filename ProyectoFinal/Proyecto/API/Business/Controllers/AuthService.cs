@@ -1,6 +1,7 @@
 ﻿using Business.Authentication;
 using Business.Utils;
 using Data.Repositories;
+using Domain.Authentication;
 using Domain.Controller.Private.Auth;
 
 namespace Business.Controllers
@@ -33,7 +34,7 @@ namespace Business.Controllers
             return _authService.GenerateUserToken(user.Id, user.UserRoleId);
         }
 
-        public async Task<GetUserInfoResponse?> GetUserInfoResponse(string token)
+        public async Task<AuthenticatedUser?> GetUser(string token)
         {
             var tokenInfo = _authService.GetTokenUserInfo(token);
 
@@ -54,7 +55,9 @@ namespace Business.Controllers
                     Id = user.UserRole.Id,
                     Name = user.UserRole.Name
                 },
-                UserName = user.UserName
+                UserName = user.UserName,
+                TokenInfo = tokenInfo,
+                Active = user.Active
             };
         }
     }
