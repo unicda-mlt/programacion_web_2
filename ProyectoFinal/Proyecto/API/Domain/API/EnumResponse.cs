@@ -8,8 +8,8 @@ namespace Domain.API
 
         public class DataResponse
         {
-            public required string Nombre { get; set; }
-            public required T Valor { get; set; }
+            public required T Value { get; set; }
+            public required string Name { get; set; }
         }
     }
 }

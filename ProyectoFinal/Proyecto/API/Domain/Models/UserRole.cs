@@ -39,8 +39,8 @@ namespace Domain.Models
                 .Cast<EUserRole>()
                 .Select(e => new EnumModel<short>
                 {
-                    Id = (short)e,
-                    Nombre = e.GetName()
+                    Value = (short)e,
+                    Name = e.GetName()
                 })];
         }
     }
