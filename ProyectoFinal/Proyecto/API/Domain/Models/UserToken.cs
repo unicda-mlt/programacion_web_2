@@ -1,7 +1,7 @@
 ﻿
 namespace Domain.Models
 {
-    public class UserToken: BaseEntity<Guid>
+    public class UserToken : BaseEntity<Guid>
     {
         public Guid UserId { get; set; } = default!;
         public string Purpose { get; set; } = default!;

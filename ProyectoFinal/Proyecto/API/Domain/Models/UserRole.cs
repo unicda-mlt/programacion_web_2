@@ -1,7 +1,7 @@
 ﻿
 namespace Domain.Models
 {
-    public class UserRole: BaseEntity<short>
+    public class UserRole : BaseEntity<short>
     {
         public string Name { get; set; } = default!;
         
