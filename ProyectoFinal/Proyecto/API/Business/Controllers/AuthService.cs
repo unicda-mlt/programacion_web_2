@@ -55,6 +55,7 @@ namespace Business.Controllers
                     Id = user.UserRole.Id,
                     Name = user.UserRole.Name
                 },
+                Id = user.Id,
                 UserName = user.UserName,
                 TokenInfo = tokenInfo,
                 Active = user.Active

@@ -1,5 +1,4 @@
-﻿using Business.Authentication;
-using Business.Controllers;
+﻿using Business.Controllers;
 using Domain.Authentication;
 using Domain.Controller.Private.Auth;
 using Microsoft.AspNetCore.Authorization;
@@ -46,6 +45,7 @@ namespace API.Controllers.Private
 
             return Ok(new GetUserInfoResponse()
             {
+                Id = user.Id,
                 UserName = user.UserName,
                 UserRole = new()
                 {

@@ -3,6 +3,7 @@ namespace Domain.Authentication
 {
     public class AuthenticatedUser
     {
+        public required Guid Id { get; set; }
         public required string UserName { get; set; }
         public required Role UserRole { get; set; }
         public required TokenUserInfo TokenInfo { get; set; }

@@ -110,15 +110,15 @@ namespace API.Controllers.Private
             });
         }
 
-        [HttpPatch]
+        [HttpPatch("{id}")]
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Editar información de estudiante",
             Description = "Edita la información de un estudiante identificado por su id."
         )]
-        public async Task<IActionResult> Add(Guid Id, [FromBody] EditDto data)
+        public async Task<IActionResult> Update(Guid id, [FromBody] EditDto data)
         {
-            var dbStudent = await _studentRepository.GetById(Id);
+            var dbStudent = await _studentRepository.GetById(id);
 
             if (dbStudent == null) {
                 return BadRequest(new BadRequestResponse()
