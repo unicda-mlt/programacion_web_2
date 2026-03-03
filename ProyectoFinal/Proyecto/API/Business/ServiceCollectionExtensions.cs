@@ -50,6 +50,7 @@ namespace Business
             services.AddScoped<AuthService>();
             services.AddScoped<StudentRepository>();
             services.AddScoped<UserRepository>();
+            services.AddScoped<CandidacyTypeRepository>();
             services.AddScoped<CurrentUserContext>();
 
             return services;
