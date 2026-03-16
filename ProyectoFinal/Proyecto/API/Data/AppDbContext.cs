@@ -96,18 +96,24 @@ namespace Data
                 entity.HasData(new ScrutinyStatus
                 {
                     Id = 1,
-                    Name = "OPEN"
+                    Name = "PENDING"
                 });
 
                 entity.HasData(new ScrutinyStatus
                 {
                     Id = 2,
-                    Name = "CLOSED"
+                    Name = "OPEN"
                 });
 
                 entity.HasData(new ScrutinyStatus
                 {
                     Id = 3,
+                    Name = "CLOSED"
+                });
+
+                entity.HasData(new ScrutinyStatus
+                {
+                    Id = 4,
                     Name = "SIGNED"
                 });
             });

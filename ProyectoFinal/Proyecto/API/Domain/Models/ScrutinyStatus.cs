@@ -10,9 +10,10 @@ namespace Domain.Models
 
     public enum EScrutinyStatus : short
     {
-        OPEN = 1,
-        CLOSED = 2,
-        SIGNED = 3
+        PENDING = 1,
+        OPEN = 2,
+        CLOSED = 3,
+        SIGNED = 4
     }
 
     public static class EScrutinyStatusExtensions
