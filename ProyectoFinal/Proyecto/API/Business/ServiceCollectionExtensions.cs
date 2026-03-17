@@ -51,6 +51,11 @@ namespace Business
             services.AddScoped<StudentRepository>();
             services.AddScoped<UserRepository>();
             services.AddScoped<CandidacyTypeRepository>();
+            services.AddScoped<ScrutinyRepository>();
+            services.AddScoped<ScrutinySignRepository>();
+            services.AddScoped<SlateRepository>();
+            services.AddScoped<SlateCandidacyRepository>();
+            services.AddScoped<VoteRepository>();
             services.AddScoped<CurrentUserContext>();
 
             return services;
