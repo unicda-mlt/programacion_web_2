@@ -9,14 +9,14 @@ namespace API.Controllers.Private
 {
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController(AuthService authService, CurrentUserContext userContext) : ControllerBase
     {
         private readonly AuthService _authService = authService;
         private readonly CurrentUserContext _userContext = userContext;
 
         [AllowAnonymous]
-        [HttpPost("GenerateToken")]
+        [HttpPost("generate-token")]
         [ProducesResponseType<GenerateTokenResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Obtener token para autenticación de usuario",
@@ -33,7 +33,7 @@ namespace API.Controllers.Private
             return Unauthorized();
         }
 
-        [HttpGet("GetInfoUsuario")]
+        [HttpGet("user-info")]
         [ProducesResponseType<GetUserInfoResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Obtener información del usuario",

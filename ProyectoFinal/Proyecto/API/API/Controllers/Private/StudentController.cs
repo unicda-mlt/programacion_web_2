@@ -11,7 +11,7 @@ namespace API.Controllers.Private
 {
     [AuthorizeUserRoleAttribute(EUserRole.ADMIN)]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/students")]
     public class StudentController(StudentRepository studentRepository) : ControllerBase
     {
         private readonly StudentRepository _studentRepository = studentRepository;

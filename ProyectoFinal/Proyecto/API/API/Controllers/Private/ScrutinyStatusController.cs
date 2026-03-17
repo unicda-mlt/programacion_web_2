@@ -10,7 +10,7 @@ namespace API.Controllers.Private
     [AuthorizeUserRoleAttribute(EUserRole.ADMIN)]
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/scrutiny-statuses")]
     public class ScrutinyStatusController() : ControllerBase
     {
         [HttpGet()]

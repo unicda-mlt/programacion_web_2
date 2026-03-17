@@ -12,7 +12,7 @@ namespace API.Controllers.Private
     [AuthorizeUserRoleAttribute(EUserRole.ADMIN)]
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/user-roles")]
     public class UserRoleController() : ControllerBase
     {
         [HttpGet()]

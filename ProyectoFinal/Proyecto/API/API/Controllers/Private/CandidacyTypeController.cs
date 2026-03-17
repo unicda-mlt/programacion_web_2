@@ -12,7 +12,7 @@ namespace API.Controllers.Private
     [AuthorizeUserRoleAttribute(EUserRole.ADMIN)]
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/candidacy-types")]
     public class CandidacyTypeController(CandidacyTypeRepository candidacyTypeRepository) : ControllerBase
     {
         private readonly CandidacyTypeRepository _candidacyTypeRepository = candidacyTypeRepository;

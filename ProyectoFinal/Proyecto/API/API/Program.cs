@@ -56,6 +56,13 @@ builder.Services.AddCors(options =>
     });
 });
 
+
+builder.Services.Configure<RouteOptions>(options =>
+{
+    options.LowercaseUrls = true;
+    options.LowercaseQueryStrings = true;
+});
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -94,7 +101,7 @@ app.UseWhen(context =>
     var path = context.Request.Path;
     
     return path.StartsWithSegments("/api")
-        && !path.StartsWithSegments("/api/Auth/GenerateToken");
+        && !path.StartsWithSegments("/api/auth/generate-token");
 }, appBuilder =>
 {
     appBuilder.UseMiddleware<UserValidationMiddleware>();

@@ -12,7 +12,7 @@ namespace API.Controllers.Private
     [AuthorizeUserRoleAttribute(EUserRole.ADMIN)]
     [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/scrutinies")]
     public class ScrutinyController(ScrutinyRepository scrutinyRepository, SlateRepository slateRepository) : ControllerBase
     {
         private readonly ScrutinyRepository _scrutinyRepository = scrutinyRepository;

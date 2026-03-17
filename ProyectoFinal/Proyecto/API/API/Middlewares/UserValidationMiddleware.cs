@@ -1,9 +1,5 @@
-﻿using Azure.Core;
-using Business.Authentication;
-using Business.Controllers;
-using Data;
+﻿using Business.Controllers;
 using Domain.Authentication;
-using System.Security.Claims;
 
 namespace API.Middlewares
 {
@@ -32,7 +28,7 @@ namespace API.Middlewares
 
             userContext.User = data;
 
-            await next(context);
+            await _next(context);
         }
     }
 }
