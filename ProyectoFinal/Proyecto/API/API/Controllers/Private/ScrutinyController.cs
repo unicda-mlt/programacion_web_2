@@ -64,7 +64,7 @@ namespace API.Controllers.Private
             Summary = "Obtener una lista de escrutinios",
             Description = "Devuelve una lista de todos los escrutinios registrados en el sistema."
         )]
-        public async Task<IActionResult> GetPagination([FromQuery] PaginationQueryParams query)
+        public async Task<IActionResult> GetPagination([FromQuery] GetPaginationQuery query)
         {
             try
             {

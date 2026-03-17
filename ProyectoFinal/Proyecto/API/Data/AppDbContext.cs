@@ -199,8 +199,8 @@ namespace Data
                       .HasForeignKey(slateCandidacy => slateCandidacy.SlateId)
                       .HasConstraintName("slate_candidacies_fk_slateid");
 
-                entity.HasOne<CandidacyType>()
-                      .WithMany()
+                entity.HasOne(slateCandidacy => slateCandidacy.CandidacyType)
+                      .WithMany(candidacyType => candidacyType.Candidacies)
                       .HasForeignKey(slateCandidacy => slateCandidacy.CandidacyTypeId)
                       .HasConstraintName("slate_candidacies_fk_candidacytypeid");
             });

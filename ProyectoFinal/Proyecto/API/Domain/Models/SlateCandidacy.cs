@@ -10,5 +10,6 @@ namespace Domain.Models
         public string? ImageUrl { get; set; } = default!;
 
         public Slate Slate { get; set; } = default!;
+        public CandidacyType CandidacyType { get; set; } = default!;
     }
 }
