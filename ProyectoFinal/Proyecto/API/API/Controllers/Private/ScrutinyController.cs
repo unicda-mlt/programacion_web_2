@@ -1,11 +1,12 @@
 ﻿using Business.Authentication;
+using Business.Services;
 using Data.Repositories;
-using Domain.Models;
+using Domain.API;
 using Domain.Controller.Private.Scrutiny;
+using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Domain.API;
 
 namespace API.Controllers.Private
 {
@@ -13,8 +14,13 @@ namespace API.Controllers.Private
     [Authorize]
     [ApiController]
     [Route("api/scrutinies")]
-    public class ScrutinyController(ScrutinyRepository scrutinyRepository, SlateRepository slateRepository) : ControllerBase
+    public class ScrutinyController(UploadHandler uploadHandler,
+        ScrutinyRepository scrutinyRepository,
+        SlateRepository slateRepository
+    ) : ControllerBase
     {
+        private readonly string _uploadSubFolder = "scrutinies";
+        private readonly UploadHandler _uploadHandler = uploadHandler;
         private readonly ScrutinyRepository _scrutinyRepository = scrutinyRepository;
         private readonly SlateRepository _slateRepository = slateRepository;
 
@@ -46,6 +52,7 @@ namespace API.Controllers.Private
                     Description = dbScrutiny.Description,
                     StartDate = dbScrutiny.StartDate,
                     EndDate = dbScrutiny.EndDate,
+                    ImageUrl = dbScrutiny.ImageUrl,
                     CreatedAt = dbScrutiny.CreatedAt,
                     UpdatedAt = dbScrutiny.UpdatedAt,
                     Status = new()
@@ -73,7 +80,8 @@ namespace API.Controllers.Private
                     query.FromDate = query.FromDate.Value.Date;
                 }
 
-                if (query.ToDate != null) {
+                if (query.ToDate != null)
+                {
                     query.ToDate = query.ToDate.Value.Date.AddDays(1);
                 }
 
@@ -96,7 +104,8 @@ namespace API.Controllers.Private
                         StatusId = scrutiny.StatusId,
                         Title = scrutiny.Title,
                         StartDate = scrutiny.StartDate,
-                        EndDate = scrutiny.EndDate
+                        EndDate = scrutiny.EndDate,
+                        ImageUrl = scrutiny.ImageUrl
                     })]
                 });
             }
@@ -172,6 +181,56 @@ namespace API.Controllers.Private
             dbScrutiny.EndDate = data.EndDate ?? dbScrutiny.EndDate;
 
             return Ok();
+        }
+
+        [HttpPost("{id}/image")]
+        [ProducesResponseType<UploadImageResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Actualizar imagen de portada de un escrutinio",
+            Description = "Actualiza imagen de portada de un escrutinio registrado en el sistema."
+        )]
+        public async Task<IActionResult> UpdateImage(Guid id, IFormFile file)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(id);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.PENDING.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "El escrutinio ya no se encuentra en estado pendiente. No se puede actualizar el escrutinio."
+                });
+            }
+
+            var resultUpload = await _uploadHandler.UploadAsync(file, _uploadSubFolder);
+
+            if (!resultUpload.IsSuccess)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = resultUpload.MessageOrFilePath
+                });
+            }
+
+            if (dbScrutiny.ImageUrl != null)
+            {
+                _uploadHandler.Remove(dbScrutiny.ImageUrl);
+            }
+
+            dbScrutiny.ImageUrl = resultUpload.MessageOrFilePath;
+
+            await _scrutinyRepository.Edit(dbScrutiny);
+
+            return Ok(new UploadImageResponse()
+            {
+                ImageUrl = resultUpload.MessageOrFilePath
+            });
         }
     }
 }

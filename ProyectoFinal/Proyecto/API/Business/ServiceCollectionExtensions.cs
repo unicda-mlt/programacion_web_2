@@ -1,5 +1,6 @@
 ﻿using Business.Authentication;
 using Business.Controllers;
+using Business.Services;
 using Data.Repositories;
 using Domain.Authentication;
 using Domain.Environment;
@@ -45,7 +46,8 @@ namespace Business
                     ValidateLifetime = true
                 };
             });
-            
+
+            services.AddSingleton<UploadHandler>();
             services.AddScoped<AuthenticationService>();
             services.AddScoped<AuthService>();
             services.AddScoped<StudentRepository>();

@@ -15,6 +15,7 @@ namespace Domain.Controller.Private.Scrutiny
             public required string Description { get; set; }
             public required DateTime StartDate { get; set; }
             public required DateTime EndDate { get; set; }
+            public string? ImageUrl { get; set; }
             public required DateTime CreatedAt { get; set; }
             public DateTime? UpdatedAt { get; set; }
         }

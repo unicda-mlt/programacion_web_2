@@ -1,11 +1,12 @@
 ﻿using Business.Authentication;
+using Business.Services;
 using Data.Repositories;
-using Domain.Models;
+using Domain.API;
 using Domain.Controller.Private.ScrutinySlateCandidacy;
+using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Domain.API;
 
 namespace API.Controllers.Private
 {
@@ -13,8 +14,16 @@ namespace API.Controllers.Private
     [Authorize]
     [ApiController]
     [Route("api/scrutiny/{scrutinyId}/slate/{slateId}/candidacies")]
-    public class ScrutinySlateCandidacyController(ScrutinyRepository scrutinyRepository, SlateRepository slateRepository, SlateCandidacyRepository slateCandidacyRepository, CandidacyTypeRepository candidacyTypeRepository) : ControllerBase
+    public class ScrutinySlateCandidacyController(
+        UploadHandler uploadHandler,
+        ScrutinyRepository scrutinyRepository,
+        SlateRepository slateRepository,
+        SlateCandidacyRepository slateCandidacyRepository,
+        CandidacyTypeRepository candidacyTypeRepository
+    ) : ControllerBase
     {
+        private readonly string _uploadSubFolder = "candidacies";
+        private readonly UploadHandler _uploadHandler = uploadHandler;
         private readonly ScrutinyRepository _scrutinyRepository = scrutinyRepository;
         private readonly SlateRepository _slateRepository = slateRepository;
         private readonly SlateCandidacyRepository _slateCandidacyRepository = slateCandidacyRepository;
@@ -247,6 +256,77 @@ namespace API.Controllers.Private
             await _slateCandidacyRepository.Edit(dbCandidacy);
 
             return Ok(new OkResponse());
+        }
+
+        [HttpPost("{id}/image")]
+        [ProducesResponseType<UploadImageResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Actualizar imagen de una candidatura",
+            Description = "Actualiza imagen de una candidatura existente en una plancha de un escrutinio."
+        )]
+        public async Task<IActionResult> UpdateImage(Guid scrutinyId, Guid slateId, Guid id, IFormFile file)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(scrutinyId);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.PENDING.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "El escrutinio ya no se encuentra en estado pendiente. No se puede actualizar la candidatura."
+                });
+            }
+
+            var dbSlate = await _slateRepository.GetOneByFilter(slate => slate.ScrutinyId == scrutinyId && slate.Id == slateId);
+
+            if (dbSlate == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado la plancha."
+                });
+            }
+
+            var dbCandidacy = await _slateCandidacyRepository.GetOneByFilter(
+                candidacy => candidacy.SlateId == slateId && candidacy.Id == id
+            );
+
+            if (dbCandidacy == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado la candidatura."
+                });
+            }
+
+            var resultUpload = await _uploadHandler.UploadAsync(file, _uploadSubFolder);
+
+            if (!resultUpload.IsSuccess)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = resultUpload.MessageOrFilePath
+                });
+            }
+
+            if (dbCandidacy.ImageUrl != null)
+            {
+                _uploadHandler.Remove(dbCandidacy.ImageUrl);
+            }
+
+            dbCandidacy.ImageUrl = resultUpload.MessageOrFilePath;
+
+            await _slateCandidacyRepository.Edit(dbCandidacy);
+
+            return Ok(new UploadImageResponse() {
+                ImageUrl = resultUpload.MessageOrFilePath
+            });
         }
     }
 }

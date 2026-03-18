@@ -101,7 +101,8 @@ app.UseWhen(context =>
     var path = context.Request.Path;
     
     return path.StartsWithSegments("/api")
-        && !path.StartsWithSegments("/api/auth/generate-token");
+        && !path.StartsWithSegments("/api/auth/generate-token")
+        && !path.StartsWithSegments("/api/media");
 }, appBuilder =>
 {
     appBuilder.UseMiddleware<UserValidationMiddleware>();
