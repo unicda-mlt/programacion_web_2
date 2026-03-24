@@ -19,7 +19,7 @@ namespace API.Controllers.Private
             Summary = "Obtener un archivo multimedia.",
             Description = "Este endpoint no descarga el archivo, se recomienda su uso para obtener imagenes."
         )]
-        public async Task<IActionResult> GetImage(string filePath)
+        public IActionResult GetImage(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
@@ -51,7 +51,7 @@ namespace API.Controllers.Private
             Summary = "Descarga un archivo multimedia.",
             Description = "Descargar un archivo multimedia."
         )]
-        public async Task<IActionResult> DownloadFile(string filePath)
+        public IActionResult DownloadFile(string filePath)
         {
             if (string.IsNullOrWhiteSpace(filePath))
             {
