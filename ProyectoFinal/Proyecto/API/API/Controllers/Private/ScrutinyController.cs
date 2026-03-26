@@ -16,13 +16,16 @@ namespace API.Controllers.Private
     [Route("api/scrutinies")]
     public class ScrutinyController(UploadHandler uploadHandler,
         ScrutinyRepository scrutinyRepository,
-        SlateRepository slateRepository
+        SlateRepository slateRepository,
+        ScrutinySignRepository scrutinySignRepository
     ) : ControllerBase
     {
-        private readonly string _uploadSubFolder = "scrutinies";
+        private readonly string _uploadImageSubFolder = "scrutinies/images";
+        private readonly string _uploadSignSubFolder = "scrutinies/signs";
         private readonly UploadHandler _uploadHandler = uploadHandler;
         private readonly ScrutinyRepository _scrutinyRepository = scrutinyRepository;
         private readonly SlateRepository _slateRepository = slateRepository;
+        private readonly ScrutinySignRepository _scrutinySignRepository = scrutinySignRepository;
 
         [HttpGet("{id}")]
         [ProducesResponseType<GetByIdResponse.Response>(StatusCodes.Status200OK)]
@@ -42,6 +45,8 @@ namespace API.Controllers.Private
                 });
             }
 
+            var dbScrutinySign = await _scrutinySignRepository.GetOneByFilter(sign => sign.ScrutinyId  == id);
+
             return Ok(new GetByIdResponse.Response
             {
                 Data = new()
@@ -53,6 +58,7 @@ namespace API.Controllers.Private
                     StartDate = dbScrutiny.StartDate,
                     EndDate = dbScrutiny.EndDate,
                     ImageUrl = dbScrutiny.ImageUrl,
+                    SignFileUrl = dbScrutinySign?.FileUrl,
                     CreatedAt = dbScrutiny.CreatedAt,
                     UpdatedAt = dbScrutiny.UpdatedAt,
                     Status = new()
@@ -180,7 +186,7 @@ namespace API.Controllers.Private
             dbScrutiny.StartDate = data.StartDate ?? dbScrutiny.StartDate;
             dbScrutiny.EndDate = data.EndDate ?? dbScrutiny.EndDate;
 
-            return Ok();
+            return Ok(new OkResponse());
         }
 
         [HttpPost("{id}/image")]
@@ -208,7 +214,7 @@ namespace API.Controllers.Private
                 });
             }
 
-            var resultUpload = await _uploadHandler.UploadAsync(file, _uploadSubFolder);
+            var resultUpload = await _uploadHandler.UploadAsync(file, _uploadImageSubFolder);
 
             if (!resultUpload.IsSuccess)
             {
@@ -230,6 +236,91 @@ namespace API.Controllers.Private
             return Ok(new UploadImageResponse()
             {
                 ImageUrl = resultUpload.MessageOrFilePath
+            });
+        }
+
+        [HttpPost("{id}/close")]
+        [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Cerrar un escrutinio",
+            Description = "Cierra un escrutinio que su estado este pendiente."
+        )]
+        public async Task<IActionResult> Close(Guid id)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(id);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.PENDING.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "El escrutinio debe de estar en estado pendiente para poder cerrarse."
+                });
+            }
+
+            dbScrutiny.StatusId = EScrutinyStatus.CLOSED.GetValue();
+
+            await _scrutinyRepository.Edit(dbScrutiny);
+
+            return Ok(new OkResponse());
+        }
+
+        [HttpPost("{id}/sign")]
+        [ProducesResponseType<SignResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Firmar un escrutinio",
+            Description = "Firma un escrutinio que este en estado cerrado."
+        )]
+        public async Task<IActionResult> Sign(Guid id, IFormFile file)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(id);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.CLOSED.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "El escrutinio debe estar en estado cerrado para poder ser firmado."
+                });
+            }
+
+            var fileSize = 2 * 1024 * 1024;
+            var fileExtensions = new string[]{ ".jpg", ".png", ".pdf" };
+            var resultUpload = await _uploadHandler.UploadAsync(file, _uploadSignSubFolder, fileSize, fileExtensions);
+
+            if (!resultUpload.IsSuccess)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = resultUpload.MessageOrFilePath
+                });
+            }
+
+            await _scrutinySignRepository.Create(new()
+            {
+                ScrutinyId = id,
+                FileUrl = resultUpload.MessageOrFilePath
+            });
+
+            dbScrutiny.StatusId = EScrutinyStatus.SIGNED.GetValue();
+
+            await _scrutinyRepository.Edit(dbScrutiny);
+
+            return Ok(new SignResponse()
+            {
+                FileUrl = resultUpload.MessageOrFilePath
             });
         }
     }

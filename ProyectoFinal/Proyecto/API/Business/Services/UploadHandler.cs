@@ -11,8 +11,8 @@ namespace Business.Services
         IFormFile file,
         string subFolder,
         long sizeLimit = 5 * 1024 * 1024,
-        string[]? validExtensions = null)
-        {
+        string[]? validExtensions = null
+        ) {
             validExtensions ??= [".jpg", ".png"];
 
             string extension = Path.GetExtension(file.FileName).ToLowerInvariant();
