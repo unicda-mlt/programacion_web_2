@@ -10,8 +10,6 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers.Public
 {
-    [AuthorizeUserRoleAttribute(EUserRole.STUDENT)]
-    [Authorize]
     [ApiController]
     [Route("api/public/scrutinies")]
     public class ScrutinyController(
@@ -29,6 +27,7 @@ namespace API.Controllers.Public
         private readonly CurrentUserContext _userContext = userContext;
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         [ProducesResponseType<GetByIdResponse.Response>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Obtener informaicón de un escrutinio.",
@@ -87,6 +86,7 @@ namespace API.Controllers.Public
         }
 
         [HttpGet]
+        [AllowAnonymous]
         [ProducesResponseType<GetPaginationResponse.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType<BadRequestResponse>(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
@@ -138,6 +138,8 @@ namespace API.Controllers.Public
         }
 
         [HttpPost("{id}/vote")]
+        [Authorize]
+        [AuthorizeUserRoleAttribute(EUserRole.STUDENT)]
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Votar por una plancha.",

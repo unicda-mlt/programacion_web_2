@@ -7,13 +7,13 @@ using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers.Public
 {
-    [AllowAnonymous]
     [ApiController]
     [Route("api/media")]
     public class MediaController(UploadHandler uploadHandler) : ControllerBase
     {
         private readonly UploadHandler _uploadHandler = uploadHandler;
 
+        [AllowAnonymous]
         [HttpGet("{filePath}")]
         [SwaggerOperation(
             Summary = "Obtener un archivo multimedia.",
@@ -46,6 +46,7 @@ namespace API.Controllers.Public
             );
         }
 
+        [AllowAnonymous]
         [HttpGet("download/{filePath}")]
         [SwaggerOperation(
             Summary = "Descarga un archivo multimedia.",

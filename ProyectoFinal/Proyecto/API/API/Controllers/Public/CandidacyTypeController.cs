@@ -1,22 +1,19 @@
-﻿using Business.Authentication;
-using Data.Repositories;
+﻿using Data.Repositories;
 using Domain.API;
 using Domain.Controller.Public.CandidacyType;
-using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace API.Controllers.Public
 {
-    [AuthorizeUserRoleAttribute(EUserRole.STUDENT)]
-    [Authorize]
     [ApiController]
     [Route("api/public/candidacy-types")]
     public class CandidacyTypeController(CandidacyTypeRepository candidacyTypeRepository) : ControllerBase
     {
         private readonly CandidacyTypeRepository _candidacyTypeRepository = candidacyTypeRepository;
 
+        [AllowAnonymous]
         [HttpGet]
         [ProducesResponseType<GetPaginationResponse.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType<BadRequestResponse>(StatusCodes.Status500InternalServerError)]

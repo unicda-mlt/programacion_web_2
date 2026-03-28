@@ -1,5 +1,6 @@
 ﻿using Business.Controllers;
 using Domain.Authentication;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Middlewares
 {
@@ -9,6 +10,14 @@ namespace API.Middlewares
 
         public async Task InvokeAsync(HttpContext context, AuthService authService, CurrentUserContext userContext)
         {
+            var endpoint = context.GetEndpoint();
+            var allowAnonymous = endpoint?.Metadata.GetMetadata<IAllowAnonymous>();
+            if (allowAnonymous != null)
+            {
+                await _next(context);
+                return;
+            }
+
             string? authHeader = context.Request.Headers.Authorization;
 
             if (string.IsNullOrEmpty(authHeader) || !authHeader.StartsWith("Bearer "))
