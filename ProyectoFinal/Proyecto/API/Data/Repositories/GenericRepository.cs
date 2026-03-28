@@ -133,6 +133,27 @@ namespace Data.Repositories
             return await query.Where(x => x.Id!.Equals(Id)).FirstOrDefaultAsync();
         }
 
+        public async Task<IList<Entity>> GetAllNoPagination(Expression<Func<Entity, bool>> filter, string? include = null)
+        {
+            List<Entity> data;
+
+            if (include != null)
+            {
+                data = await _set
+                .Include(include)
+                .Where(filter)
+                .ToListAsync();
+            }
+            else
+            {
+                data = await _set
+                .Where(filter)
+                .ToListAsync();
+            }
+
+            return data;
+        }
+
         public async Task<IPaginationResponse<Entity>> GetAll(int? pageArg, byte? pageSizeArg)
         {
             int page = pageArg ?? 1;

@@ -32,6 +32,8 @@ namespace Data.Repositories.Interfaces
 
         Task<Entity?> GetById(IdType Id, string[] include);
 
+        Task<IList<Entity>> GetAllNoPagination(Expression<Func<Entity, bool>> filter, string? include);
+
         Task<IPaginationResponse<Entity>> GetAll(int? page, byte? pageSize);
 
         Task<IPaginationResponse<Entity>> GetAll(string include, int? page, byte? pageSize);

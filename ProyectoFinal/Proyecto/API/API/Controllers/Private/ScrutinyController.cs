@@ -169,22 +169,12 @@ namespace API.Controllers.Private
                 });
             }
 
-            var dbSlates = await _slateRepository.GetAll(slate => slate.ScrutinyId == id);
-            var countSlates = dbSlates?.Data.Count ?? 0;
-
-            if (data.StatusId != null && data.StatusId != EScrutinyStatus.PENDING.GetValue() && countSlates < 2)
-            {
-                return BadRequest(new BadRequestResponse
-                {
-                    BadMessage = "Debe de haber mínimo 2 planchas para aperturar, cerrar o firmar un escrutinio."
-                });
-            }
-
-            dbScrutiny.StatusId = data.StatusId ?? dbScrutiny.StatusId;
             dbScrutiny.Title = data.Title ?? dbScrutiny.Title;
             dbScrutiny.Description = data.Description ?? dbScrutiny.Description;
             dbScrutiny.StartDate = data.StartDate ?? dbScrutiny.StartDate;
             dbScrutiny.EndDate = data.EndDate ?? dbScrutiny.EndDate;
+
+            await _scrutinyRepository.Edit(dbScrutiny);
 
             return Ok(new OkResponse());
         }
@@ -239,6 +229,49 @@ namespace API.Controllers.Private
             });
         }
 
+        [HttpPatch("{id}/open")]
+        [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Actualizar un escrutinio",
+            Description = "Actualiza un escrutinio existente en el sistema."
+        )]
+        public async Task<IActionResult> Open(Guid id)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(id);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.PENDING.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "El escrutinio no se encuentra en estado pendiente. No se puede volver a aperturar."
+                });
+            }
+
+            var dbSlates = await _slateRepository.GetAll(slate => slate.ScrutinyId == id);
+            var countSlates = dbSlates?.Data.Count ?? 0;
+
+            if (countSlates < 2)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "Debe de haber mínimo 2 planchas para aperturar un escrutinio."
+                });
+            }
+
+            dbScrutiny.StatusId = EScrutinyStatus.OPEN.GetValue();
+
+            await _scrutinyRepository.Edit(dbScrutiny);
+
+            return Ok(new OkResponse());
+        }
+
         [HttpPost("{id}/close")]
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
@@ -256,11 +289,11 @@ namespace API.Controllers.Private
                     BadMessage = "No se ha encontrado el escrutinio."
                 });
             }
-            else if (dbScrutiny.StatusId != EScrutinyStatus.PENDING.GetValue())
+            else if (dbScrutiny.StatusId != EScrutinyStatus.OPEN.GetValue())
             {
                 return BadRequest(new BadRequestResponse
                 {
-                    BadMessage = "El escrutinio debe de estar en estado pendiente para poder cerrarse."
+                    BadMessage = "El escrutinio debe de estar en estado abierto para poder cerrarse."
                 });
             }
 

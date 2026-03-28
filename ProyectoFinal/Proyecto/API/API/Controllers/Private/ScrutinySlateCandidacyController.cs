@@ -13,7 +13,7 @@ namespace API.Controllers.Private
     [AuthorizeUserRoleAttribute(EUserRole.ADMIN)]
     [Authorize]
     [ApiController]
-    [Route("api/scrutiny/{scrutinyId}/slate/{slateId}/candidacies")]
+    [Route("api/scrutinies/{scrutinyId}/slates/{slateId}/candidacies")]
     public class ScrutinySlateCandidacyController(
         UploadHandler uploadHandler,
         ScrutinyRepository scrutinyRepository,

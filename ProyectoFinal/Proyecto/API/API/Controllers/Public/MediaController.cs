@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.StaticFiles;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace API.Controllers.Private
+namespace API.Controllers.Public
 {
     [AllowAnonymous]
     [ApiController]
