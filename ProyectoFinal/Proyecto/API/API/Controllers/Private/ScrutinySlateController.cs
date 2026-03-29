@@ -1,4 +1,5 @@
 ﻿using Business.Authentication;
+using Business.Services;
 using Data.Repositories;
 using Domain.Models;
 using Domain.Controller.Private.ScrutinySlate;
@@ -13,8 +14,15 @@ namespace API.Controllers.Private
     [Authorize]
     [ApiController]
     [Route("api/scrutinies/{scrutinyId}/slates")]
-    public class ScrutinySlateController(ScrutinyRepository scrutinyRepository, SlateRepository slateRepository, SlateCandidacyRepository slateCandidacyRepository) : ControllerBase
+    public class ScrutinySlateController(
+        UploadHandler uploadHandler,
+        ScrutinyRepository scrutinyRepository,
+        SlateRepository slateRepository,
+        SlateCandidacyRepository slateCandidacyRepository
+    ) : ControllerBase
     {
+        private readonly string _uploadSubFolder = "candidacies";
+        private readonly UploadHandler _uploadHandler = uploadHandler;
         private readonly ScrutinyRepository _scrutinyRepository = scrutinyRepository;
         private readonly SlateRepository _slateRepository = slateRepository;
         private readonly SlateCandidacyRepository _slateCandidacyRepository = slateCandidacyRepository;
@@ -202,6 +210,61 @@ namespace API.Controllers.Private
             await _slateRepository.Edit(dbSlate);
 
             return Ok();
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Eliminar una plancha",
+            Description = "Elimina una plancha y todas sus candidaturas (con sus imágenes). Solo se puede eliminar si el escrutinio está en estado PENDIENTE."
+        )]
+        public async Task<IActionResult> Delete(Guid scrutinyId, Guid id)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(scrutinyId);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.PENDING.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "El escrutinio ya no se encuentra en estado pendiente. No se puede eliminar la plancha."
+                });
+            }
+
+            var dbSlate = await _slateRepository.GetOneByFilter(slate => slate.ScrutinyId == scrutinyId && slate.Id == id);
+
+            if (dbSlate == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado la plancha."
+                });
+            }
+
+            var dbCandidacies = await _slateCandidacyRepository.GetAllNoPagination(
+                candidacy => candidacy.SlateId == id,
+                null
+            );
+
+            foreach (var candidacy in dbCandidacies)
+            {
+                if (candidacy.ImageUrl != null)
+                {
+                    _uploadHandler.Remove(candidacy.ImageUrl);
+                }
+            }
+
+            await _slateCandidacyRepository.DeleteWhere(candidacy => candidacy.SlateId == id);
+
+            await _slateRepository.DeleteById(id);
+
+            return Ok(new OkResponse());
         }
     }
 }

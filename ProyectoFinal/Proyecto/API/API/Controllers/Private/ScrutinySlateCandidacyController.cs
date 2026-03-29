@@ -328,5 +328,62 @@ namespace API.Controllers.Private
                 ImageUrl = resultUpload.MessageOrFilePath
             });
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Eliminar una candidatura",
+            Description = "Elimina una candidatura de una plancha en un escrutinio. Solo se permite si el escrutinio está en estado PENDIENTE. Si la candidatura tiene una imagen asociada, también se elimina."
+        )]
+        public async Task<IActionResult> Delete(Guid scrutinyId, Guid slateId, Guid id)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(scrutinyId);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.PENDING.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "El escrutinio ya no se encuentra en estado pendiente. No se puede eliminar la candidatura."
+                });
+            }
+
+            var dbSlate = await _slateRepository.GetOneByFilter(slate => slate.ScrutinyId == scrutinyId && slate.Id == slateId);
+
+            if (dbSlate == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado la plancha."
+                });
+            }
+
+            var dbCandidacy = await _slateCandidacyRepository.GetOneByFilter(
+                candidacy => candidacy.SlateId == slateId && candidacy.Id == id
+            );
+
+            if (dbCandidacy == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado la candidatura."
+                });
+            }
+
+            if (dbCandidacy.ImageUrl != null)
+            {
+                _uploadHandler.Remove(dbCandidacy.ImageUrl);
+            }
+
+            await _slateCandidacyRepository.DeleteById(id);
+
+            return Ok(new OkResponse());
+        }
     }
 }

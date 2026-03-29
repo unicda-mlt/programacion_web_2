@@ -108,11 +108,13 @@ namespace API.Controllers.Public
                 }
 
                 var result = await _scrutinyRepository.GetAll(
-                    scrutiny => (
+                    filter: scrutiny => (
                         scrutiny.StatusId == EScrutinyStatus.OPEN.GetValue()
                         && (query.FromDate == null || scrutiny.StartDate >= query.FromDate)
                         && (query.ToDate == null || scrutiny.EndDate <= query.ToDate)
                     ),
+                    selector: scrutiny => scrutiny,
+                    orderBy: scrutiny => scrutiny.StartDate, 
                     pageArg: query.Page,
                     pageSizeArg: query.PageSize
                 );
@@ -198,6 +200,110 @@ namespace API.Controllers.Public
             });
 
             return Ok(new OkResponse());
+        }
+
+        [HttpDelete("{id}/vote")]
+        [Authorize]
+        [AuthorizeUserRoleAttribute(EUserRole.STUDENT)]
+        [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Revocar voto.",
+            Description = "Permite al estudiante autenticado revocar su voto en un escrutinio. Requiere autenticación con rol ESTUDIANTE. Valida que el escrutinio esté disponible para votar, que el usuario tenga un estudiante vinculado y que el estudiante haya votado previamente."
+        )]
+        public async Task<IActionResult> RevokeVote(Guid id)
+        {
+            var user = _userContext.User!;
+            var canVote = await _scrutinyRepository.CanVote(id);
+
+            if (!canVote)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "El escrutinio no se encuentra disponible para revocar el voto."
+                });
+            }
+
+            var dbStudent = await _studentRepository.GetOneByFilter(student => student.UserId == user.Id);
+
+            if (dbStudent == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "Estudiante no encontrado."
+                });
+            }
+
+            var dbVote = await _voteRepository.GetOneByFilter(vote => vote.ScrutinyId == id && vote.StudentId == dbStudent.Id);
+
+            if (dbVote == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No ha ejercido su voto en este escrutinio."
+                });
+            }
+
+            await _voteRepository.DeleteById(dbVote.Id);
+
+            return Ok(new OkResponse());
+        }
+
+        [HttpGet("{id}/vote-status")]
+        [Authorize]
+        [AuthorizeUserRoleAttribute(EUserRole.STUDENT)]
+        [ProducesResponseType<GetVoteStatusResponse.Response>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Obtener estado del voto del estudiante.",
+            Description = "Devuelve si el estudiante autenticado ha votado en el escrutinio y, en caso afirmativo, por cuál plancha votó. Requiere autenticación con rol ESTUDIANTE."
+        )]
+        public async Task<IActionResult> GetVoteStatus(Guid id)
+        {
+            var user = _userContext.User!;
+            
+            var dbScrutiny = await _scrutinyRepository.GetById(id);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+
+            var dbStudent = await _studentRepository.GetOneByFilter(student => student.UserId == user.Id);
+
+            if (dbStudent == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "Estudiante no encontrado."
+                });
+            }
+
+            var dbVote = await _voteRepository.GetOneByFilter(vote => vote.ScrutinyId == id && vote.StudentId == dbStudent.Id, "Slate");
+
+            if (dbVote == null)
+            {
+                return Ok(new GetVoteStatusResponse.Response
+                {
+                    Data = new()
+                    {
+                        HasVoted = false,
+                        SlateId = null,
+                        VoteDate = null
+                    }
+                });
+            }
+
+            return Ok(new GetVoteStatusResponse.Response
+            {
+                Data = new()
+                {
+                    HasVoted = true,
+                    SlateId = dbVote.SlateId,
+                    VoteDate = dbVote.IssueDate
+                }
+            });
         }
     }
 }

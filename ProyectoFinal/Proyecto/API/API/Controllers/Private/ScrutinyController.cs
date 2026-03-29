@@ -17,7 +17,9 @@ namespace API.Controllers.Private
     public class ScrutinyController(UploadHandler uploadHandler,
         ScrutinyRepository scrutinyRepository,
         SlateRepository slateRepository,
-        ScrutinySignRepository scrutinySignRepository
+        SlateCandidacyRepository slateCandidacyRepository,
+        ScrutinySignRepository scrutinySignRepository,
+        VoteRepository voteRepository
     ) : ControllerBase
     {
         private readonly string _uploadImageSubFolder = "scrutinies/images";
@@ -25,7 +27,9 @@ namespace API.Controllers.Private
         private readonly UploadHandler _uploadHandler = uploadHandler;
         private readonly ScrutinyRepository _scrutinyRepository = scrutinyRepository;
         private readonly SlateRepository _slateRepository = slateRepository;
+        private readonly SlateCandidacyRepository _slateCandidacyRepository = slateCandidacyRepository;
         private readonly ScrutinySignRepository _scrutinySignRepository = scrutinySignRepository;
+        private readonly VoteRepository _voteRepository = voteRepository;
 
         [HttpGet("{id}")]
         [ProducesResponseType<GetByIdResponse.Response>(StatusCodes.Status200OK)]
@@ -355,6 +359,146 @@ namespace API.Controllers.Private
             {
                 FileUrl = resultUpload.MessageOrFilePath
             });
+        }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Eliminar un escrutinio",
+            Description = "Elimina un escrutinio y todos sus datos relacionados (planchas, candidaturas, votos, firmas e imágenes). Solo se puede eliminar si el escrutinio está en estado PENDIENTE."
+        )]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(id);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.PENDING.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "Solo se pueden eliminar escrutinios en estado pendiente."
+                });
+            }
+
+            await _voteRepository.DeleteWhere(vote => vote.ScrutinyId == id);
+
+            var dbSlates = await _slateRepository.GetAllNoPagination(slate => slate.ScrutinyId == id, null);
+
+            foreach (var slate in dbSlates)
+            {
+                var dbCandidacies = await _slateCandidacyRepository.GetAllNoPagination(
+                    candidacy => candidacy.SlateId == slate.Id,
+                    null
+                );
+
+                foreach (var candidacy in dbCandidacies)
+                {
+                    if (candidacy.ImageUrl != null)
+                    {
+                        _uploadHandler.Remove(candidacy.ImageUrl);
+                    }
+                }
+
+                await _slateCandidacyRepository.DeleteWhere(candidacy => candidacy.SlateId == slate.Id);
+            }
+
+            await _slateRepository.DeleteWhere(slate => slate.ScrutinyId == id);
+
+            var dbSigns = await _scrutinySignRepository.GetAllNoPagination(
+                sign => sign.ScrutinyId == id,
+                null
+            );
+
+            foreach (var sign in dbSigns)
+            {
+                if (sign.FileUrl != null)
+                {
+                    _uploadHandler.Remove(sign.FileUrl);
+                }
+            }
+
+            await _scrutinySignRepository.DeleteWhere(sign => sign.ScrutinyId == id);
+
+            if (dbScrutiny.ImageUrl != null)
+            {
+                _uploadHandler.Remove(dbScrutiny.ImageUrl);
+            }
+
+            await _scrutinyRepository.DeleteById(id);
+
+            return Ok(new OkResponse());
+        }
+
+        [HttpPatch("{id}/revert-to-open")]
+        [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Revertir escrutinio a estado ABIERTO",
+            Description = "Cambia el estado del escrutinio de CERRADO a ABIERTO. Solo se puede revertir si el escrutinio está en estado CERRADO."
+        )]
+        public async Task<IActionResult> RevertToOpen(Guid id)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(id);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.CLOSED.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "Solo se pueden revertir escrutinios en estado cerrado."
+                });
+            }
+
+            dbScrutiny.StatusId = EScrutinyStatus.OPEN.GetValue();
+
+            await _scrutinyRepository.Edit(dbScrutiny);
+
+            return Ok(new OkResponse());
+        }
+
+        [HttpPatch("{id}/revert-to-pending")]
+        [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
+        [SwaggerOperation(
+            Summary = "Revertir escrutinio a estado PENDIENTE",
+            Description = "Cambia el estado del escrutinio de ABIERTO a PENDIENTE. Esta acción eliminará todos los votos registrados en el escrutinio. Solo se puede revertir si el escrutinio está en estado ABIERTO."
+        )]
+        public async Task<IActionResult> RevertToPending(Guid id)
+        {
+            var dbScrutiny = await _scrutinyRepository.GetById(id);
+
+            if (dbScrutiny == null)
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "No se ha encontrado el escrutinio."
+                });
+            }
+            else if (dbScrutiny.StatusId != EScrutinyStatus.OPEN.GetValue())
+            {
+                return BadRequest(new BadRequestResponse
+                {
+                    BadMessage = "Solo se pueden revertir escrutinios en estado abierto."
+                });
+            }
+
+            await _voteRepository.DeleteWhere(vote => vote.ScrutinyId == id);
+
+            dbScrutiny.StatusId = EScrutinyStatus.PENDING.GetValue();
+
+            await _scrutinyRepository.Edit(dbScrutiny);
+
+            return Ok(new OkResponse());
         }
     }
 }
