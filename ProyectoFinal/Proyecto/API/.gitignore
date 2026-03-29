@@ -40,6 +40,8 @@
 /.vs/
 **/.vs/
 **/iisexpress/
+localhost.key
+localhost.pem
 
 # Log files
 *.log
