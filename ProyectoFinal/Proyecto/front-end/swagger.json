@@ -1,0 +1,4370 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "LaVozEstudiantil - API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/auth/generate-token": {
+      "post": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Obtener token para autenticación de usuario",
+        "description": "Genera un token para la autenticación de usuario basado en las credenciales proporcionadas.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GenerateUserTokenDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GenerateUserTokenDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GenerateUserTokenDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GenerateTokenResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GenerateTokenResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GenerateTokenResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/auth/user-info": {
+      "get": {
+        "tags": [
+          "Auth"
+        ],
+        "summary": "Obtener información del usuario",
+        "description": "Recupera información sobre el usuario autenticado basado en el token proporcionado. Este endpoint requiere un token Bearer válido en el encabezado Authorization.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GetUserInfoResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GetUserInfoResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GetUserInfoResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/public/candidacy-types": {
+      "get": {
+        "tags": [
+          "CandidacyType"
+        ],
+        "summary": "Obtener una lista paginada de tipos de candidatura",
+        "description": "Devuelve una lista paginada de todos los tipos de candidatura registrados en el sistema. Endpoint público, no requiere autenticación.",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.CandidacyType.GetPaginationResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.CandidacyType.GetPaginationResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.CandidacyType.GetPaginationResponse.Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/candidacy-types/{id}": {
+      "get": {
+        "tags": [
+          "CandidacyType"
+        ],
+        "summary": "Obtener información de un tipo de candidatura",
+        "description": "Devuelve la información de un tipo de candidatura identificado por su id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.GetByIdResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.GetByIdResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.GetByIdResponse.Response"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "CandidacyType"
+        ],
+        "summary": "Editar información de tipo de candidatura",
+        "description": "Actualiza parcialmente el nombre y/o posición de un tipo de candidatura. Valida que el nombre y la posición sean únicos entre los demás tipos existentes.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.UpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.UpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.UpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/candidacy-types": {
+      "get": {
+        "tags": [
+          "CandidacyType"
+        ],
+        "summary": "Obtener una lista de tipos de candidatura",
+        "description": "Devuelve una lista de todos los tipos de candidatura registrados en el sistema.",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.GetPaginationResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.GetPaginationResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.GetPaginationResponse.Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "CandidacyType"
+        ],
+        "summary": "Agregar un nuevo tipo de candidatura",
+        "description": "Crea un nuevo tipo de candidatura en el sistema. El nombre y la posición deben ser únicos (el nombre se compara sin distinción de mayúsculas/minúsculas ni espacios).",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.AddDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.AddDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.AddDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.AddResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.AddResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.AddResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/media/{filePath}": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Obtener un archivo multimedia.",
+        "description": "Sirve el archivo en línea con el tipo de contenido (MIME) correspondiente. No fuerza descarga. Recomendado para mostrar imágenes directamente en el navegador. Acepta el path codificado en URL.",
+        "parameters": [
+          {
+            "name": "filePath",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/media/download/{filePath}": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "summary": "Descargar un archivo multimedia.",
+        "description": "Fuerza la descarga del archivo con Content-Disposition: attachment, usando el nombre real del archivo. Acepta el path codificado en URL.",
+        "parameters": [
+          {
+            "name": "filePath",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/public/scrutinies/{id}": {
+      "get": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Obtener información de un escrutinio.",
+        "description": "Devuelve la información de un escrutinio junto con sus planchas y candidaturas. Solo retorna datos si el escrutinio está disponible para votar (estado ABIERTO y dentro de su rango de fechas).",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetByIdResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetByIdResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetByIdResponse.Response"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/scrutinies": {
+      "get": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Obtener una lista de escrutinios",
+        "description": "Devuelve una lista de todos los escrutinios que esten abiertos para votar.",
+        "parameters": [
+          {
+            "name": "FromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "ToDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetPaginationResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetPaginationResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetPaginationResponse.Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/public/scrutinies/{id}/vote": {
+      "post": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Votar por una plancha.",
+        "description": "Registra el voto del estudiante autenticado por una plancha del escrutinio. Requiere autenticación con rol ESTUDIANTE. Valida que el escrutinio esté disponible para votar, que el usuario tenga un estudiante vinculado, que la plancha pertenezca al escrutinio y que el estudiante no haya votado previamente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.PostVoteBody"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.PostVoteBody"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.PostVoteBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Revocar voto.",
+        "description": "Permite al estudiante autenticado revocar su voto en un escrutinio. Requiere autenticación con rol ESTUDIANTE. Valida que el escrutinio esté disponible para votar, que el usuario tenga un estudiante vinculado y que el estudiante haya votado previamente.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/public/scrutinies/{id}/vote-status": {
+      "get": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Obtener estado del voto del estudiante.",
+        "description": "Devuelve si el estudiante autenticado ha votado en el escrutinio y, en caso afirmativo, por cuál plancha votó. Requiere autenticación con rol ESTUDIANTE.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetVoteStatusResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetVoteStatusResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetVoteStatusResponse.Response"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{id}": {
+      "get": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Obtener información de un escrutinio.",
+        "description": "Devuelve la información de un escrutinio identificado por su id, incluyendo su estado y, si fue firmado, la URL del archivo de firma.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.GetByIdResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.GetByIdResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.GetByIdResponse.Response"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Actualizar un escrutinio",
+        "description": "Actualiza parcialmente los datos de un escrutinio existente. Solo se puede actualizar si el escrutinio se encuentra en estado PENDIENTE.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.UpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.UpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.UpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Eliminar un escrutinio",
+        "description": "Elimina un escrutinio y todos sus datos relacionados (planchas, candidaturas, votos, firmas e imágenes). Solo se puede eliminar si el escrutinio está en estado PENDIENTE.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies": {
+      "get": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Obtener una lista paginada de escrutinios",
+        "description": "Devuelve una lista paginada de escrutinios. Permite filtrar opcionalmente por estado (statusId), fecha de inicio desde (fromDate) y fecha de fin hasta (toDate).",
+        "parameters": [
+          {
+            "name": "StatusId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "FromDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "ToDate",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.GetPaginationResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.GetPaginationResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.GetPaginationResponse.Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Agregar un nuevo escrutinio",
+        "description": "Crea un nuevo escrutinio en el sistema. El escrutinio se registra con estado PENDIENTE automáticamente.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.AddDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.AddDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.AddDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.AddResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.AddResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.AddResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{id}/image": {
+      "post": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Actualizar imagen de portada de un escrutinio",
+        "description": "Sube y establece la imagen de portada de un escrutinio. Reemplaza la imagen anterior si existía. Solo se permite cuando el escrutinio está en estado PENDIENTE.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.UploadImageResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.UploadImageResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.UploadImageResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{id}/open": {
+      "patch": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Aperturar un escrutinio",
+        "description": "Cambia el estado del escrutinio de PENDIENTE a ABIERTO. Requiere que el escrutinio tenga al menos 2 planchas registradas.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{id}/close": {
+      "post": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Cerrar un escrutinio",
+        "description": "Cambia el estado del escrutinio de ABIERTO a CERRADO. Solo se puede cerrar si el escrutinio se encuentra en estado ABIERTO.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{id}/sign": {
+      "post": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Firmar un escrutinio",
+        "description": "Sube un archivo de firma y cambia el estado del escrutinio de CERRADO a FIRMADO. Acepta archivos .jpg, .png o .pdf con un tamaño máximo de 2 MB. Solo se puede firmar si el escrutinio está en estado CERRADO.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.SignResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.SignResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.SignResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{id}/revert-to-open": {
+      "patch": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Revertir escrutinio a estado ABIERTO",
+        "description": "Cambia el estado del escrutinio de CERRADO a ABIERTO. Solo se puede revertir si el escrutinio está en estado CERRADO.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{id}/revert-to-pending": {
+      "patch": {
+        "tags": [
+          "Scrutiny"
+        ],
+        "summary": "Revertir escrutinio a estado PENDIENTE",
+        "description": "Cambia el estado del escrutinio de ABIERTO a PENDIENTE. Esta acción eliminará todos los votos registrados en el escrutinio. Solo se puede revertir si el escrutinio está en estado ABIERTO.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{scrutinyId}/slates/{id}": {
+      "get": {
+        "tags": [
+          "ScrutinySlate"
+        ],
+        "summary": "Obtener información de una plancha.",
+        "description": "Devuelve la información de una plancha identificada por su id dentro de un escrutinio, incluyendo todas sus candidaturas con su tipo de candidatura.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetByIdResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetByIdResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetByIdResponse.Response"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "ScrutinySlate"
+        ],
+        "summary": "Actualizar una plancha",
+        "description": "Actualiza la posición de una plancha existente dentro de un escrutinio. Solo se puede modificar si el escrutinio está en estado PENDIENTE.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.UpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.UpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.UpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ScrutinySlate"
+        ],
+        "summary": "Eliminar una plancha",
+        "description": "Elimina una plancha y todas sus candidaturas (con sus imágenes). Solo se puede eliminar si el escrutinio está en estado PENDIENTE.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{scrutinyId}/slates": {
+      "get": {
+        "tags": [
+          "ScrutinySlate"
+        ],
+        "summary": "Obtener una lista de planchas",
+        "description": "Devuelve una lista de todas las planchas pertenecientes a un escrutinio.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetPaginationResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetPaginationResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetPaginationResponse.Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ScrutinySlate"
+        ],
+        "summary": "Agregar una nueva plancha",
+        "description": "Crea una nueva plancha en un escrutinio. La posición debe ser única dentro del escrutinio. Solo se puede agregar si el escrutinio está en estado PENDIENTE.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.AddDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.AddDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.AddDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.AddResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.AddResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.AddResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{scrutinyId}/slates/{slateId}/candidacies/{id}": {
+      "get": {
+        "tags": [
+          "ScrutinySlateCandidacy"
+        ],
+        "summary": "Obtener información de una candidatura.",
+        "description": "Devuelve la información de una candidatura identificada por su id dentro de una plancha, incluyendo el tipo de candidatura asociado.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "slateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.GetByIdResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.GetByIdResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.GetByIdResponse.Response"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "ScrutinySlateCandidacy"
+        ],
+        "summary": "Actualizar una candidatura",
+        "description": "Actualiza parcialmente una candidatura existente en una plancha. Solo se permite si el escrutinio está en estado PENDIENTE. Si se envía un nuevo tipo de candidatura, valida que exista.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "slateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.UpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.UpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.UpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "ScrutinySlateCandidacy"
+        ],
+        "summary": "Eliminar una candidatura",
+        "description": "Elimina una candidatura de una plancha en un escrutinio. Solo se permite si el escrutinio está en estado PENDIENTE. Si la candidatura tiene una imagen asociada, también se elimina.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "slateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{scrutinyId}/slates/{slateId}/candidacies": {
+      "get": {
+        "tags": [
+          "ScrutinySlateCandidacy"
+        ],
+        "summary": "Obtener una lista de candidaturas",
+        "description": "Devuelve una lista de todas las candidaturas pertenecientes a una plancha de un escrutinio.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "slateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.GetPaginationResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.GetPaginationResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.GetPaginationResponse.Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "ScrutinySlateCandidacy"
+        ],
+        "summary": "Agregar una nueva candidatura",
+        "description": "Crea una nueva candidatura en una plancha de un escrutinio. Valida que el escrutinio esté en estado PENDIENTE, que la plancha pertenezca al escrutinio y que el tipo de candidatura exista.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "slateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.AddDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.AddDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.AddDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.AddResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.AddResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.AddResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutinies/{scrutinyId}/slates/{slateId}/candidacies/{id}/image": {
+      "post": {
+        "tags": [
+          "ScrutinySlateCandidacy"
+        ],
+        "summary": "Actualizar imagen de una candidatura",
+        "description": "Sube y establece la imagen de una candidatura. Reemplaza la imagen anterior si existía. Solo se permite cuando el escrutinio está en estado PENDIENTE.",
+        "parameters": [
+          {
+            "name": "scrutinyId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "slateId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "file": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.UploadImageResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.UploadImageResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.UploadImageResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/scrutiny-statuses": {
+      "get": {
+        "tags": [
+          "ScrutinyStatus"
+        ],
+        "summary": "Obtener estados de escrutinios.",
+        "description": "Devuelve todos los estados posibles de los escrutinios.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.EnumResponse_Domain.Models.EScrutinyStatus"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.EnumResponse_Domain.Models.EScrutinyStatus"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.EnumResponse_Domain.Models.EScrutinyStatus"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/students/{id}": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "summary": "Obtener información de un estudiante.",
+        "description": "Devuelve la información de un estudiante identificado por su id, incluyendo su número de matrícula, nombre, apellido, estado de graduación y el id de usuario asociado si lo tiene.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Student.GetByIdResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Student.GetByIdResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Student.GetByIdResponse.Response"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "Student"
+        ],
+        "summary": "Editar información de estudiante",
+        "description": "Edita la información de un estudiante identificado por su id.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Student.EditDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Student.EditDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Student.EditDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/students": {
+      "get": {
+        "tags": [
+          "Student"
+        ],
+        "summary": "Obtener una lista de estudiantes",
+        "description": "Devuelve una lista de todos los estudiantes registrados en el sistema.",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Student.GetPaginationResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Student.GetPaginationResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Student.GetPaginationResponse.Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "Student"
+        ],
+        "summary": "Agregar un nuevo estudiante",
+        "description": "Crea un nuevo estudiante en el sistema. El número de matrícula se genera automáticamente. El estudiante se crea con el estado de graduado en falso.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Student.AddDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Student.AddDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.Student.AddDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Student.AddResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Student.AddResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.Student.AddResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/users/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Obtener información de un usuario.",
+        "description": "Devuelve la información de un usuario identificado por su id. Si el usuario tiene rol de estudiante, incluye el id del estudiante asociado.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.User.GetByIdResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.User.GetByIdResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.User.GetByIdResponse.Response"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Actualizar un usuario",
+        "description": "Actualiza parcialmente un usuario existente. Si se cambia el rol a ESTUDIANTE, vincula el estudiante indicado y adopta su número de matrícula como nombre de usuario. Si el rol anterior era ESTUDIANTE y cambia a otro, desvincula al estudiante previo. Valida unicidad de nombre de usuario y existencia del estudiante si aplica.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.User.UpdateDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.User.UpdateDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.User.UpdateDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.OkResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/users": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Obtener una lista paginada de usuarios",
+        "description": "Devuelve una lista paginada de usuarios registrados en el sistema, incluyendo su rol y estado activo.",
+        "parameters": [
+          {
+            "name": "Page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "PageSize",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.User.GetPaginationResponse.Response"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.User.GetPaginationResponse.Response"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.User.GetPaginationResponse.Response"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.BadRequestResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "Agregar un nuevo usuario",
+        "description": "Crea un nuevo usuario en el sistema. Si el rol es ESTUDIANTE, debe enviarse el id del estudiante y el nombre de usuario se establece automáticamente con el número de matrícula. Valida que el rol exista, que el nombre de usuario sea único y, si aplica, que el estudiante exista y no tenga usuario asignado.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.User.AddDto"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.User.AddDto"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/Domain.Controller.Private.User.AddDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.User.AddResponse"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.User.AddResponse"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.Controller.Private.User.AddResponse"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    },
+    "/api/user-roles": {
+      "get": {
+        "tags": [
+          "UserRole"
+        ],
+        "summary": "Obtener roles de usuarios.",
+        "description": "Devuelve todos los roles de usuarios permitidos en el sistema.",
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.EnumResponse_Domain.Models.EUserRole"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.EnumResponse_Domain.Models.EUserRole"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain.API.EnumResponse_Domain.Models.EUserRole"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "UserScheme": [ ]
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Domain.API.BadRequestResponse": {
+        "required": [
+          "badMessage"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "readOnly": true
+          },
+          "badMessage": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.API.DataResponse_Domain.Models.EScrutinyStatus": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/Domain.Models.EScrutinyStatus"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.API.DataResponse_Domain.Models.EUserRole": {
+        "required": [
+          "name",
+          "value"
+        ],
+        "type": "object",
+        "properties": {
+          "value": {
+            "$ref": "#/components/schemas/Domain.Models.EUserRole"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.API.EnumResponse_Domain.Models.EScrutinyStatus": {
+        "required": [
+          "data",
+          "ok"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.API.DataResponse_Domain.Models.EScrutinyStatus"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.API.EnumResponse_Domain.Models.EUserRole": {
+        "required": [
+          "data",
+          "ok"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.API.DataResponse_Domain.Models.EUserRole"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.API.Interfaces.IPagination": {
+        "type": "object",
+        "properties": {
+          "pages": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "records": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "currentPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "prevPage": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "nextPage": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.API.OkResponse": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Auth.GenerateTokenResponse": {
+        "required": [
+          "token"
+        ],
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Auth.GenerateUserTokenDto": {
+        "required": [
+          "password",
+          "userName"
+        ],
+        "type": "object",
+        "properties": {
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Auth.GetUserInfoResponse": {
+        "required": [
+          "id",
+          "studentId",
+          "userName",
+          "userRole"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "studentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "userRole": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.Auth.GetUserInfoResponse.Role"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Auth.GetUserInfoResponse.Role": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.CandidacyType.AddDto": {
+        "required": [
+          "name",
+          "position"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.CandidacyType.AddResponse": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.CandidacyType.GetByIdResponse.Data": {
+        "required": [
+          "id",
+          "name",
+          "position"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.CandidacyType.GetByIdResponse.Response": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.GetByIdResponse.Data"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.CandidacyType.GetPaginationResponse.Data": {
+        "required": [
+          "id",
+          "name",
+          "position"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.CandidacyType.GetPaginationResponse.Response": {
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Domain.API.Interfaces.IPagination"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Private.CandidacyType.GetPaginationResponse.Data"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.CandidacyType.UpdateDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.AddDto": {
+        "required": [
+          "description",
+          "endDate",
+          "startDate",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.AddResponse": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.GetByIdResponse.Data": {
+        "required": [
+          "createdAt",
+          "description",
+          "endDate",
+          "id",
+          "startDate",
+          "status",
+          "statusId",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "status": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.GetByIdResponse.StatusData"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "signFileUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.GetByIdResponse.Response": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.GetByIdResponse.Data"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.GetByIdResponse.StatusData": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.GetPaginationResponse.Data": {
+        "required": [
+          "endDate",
+          "id",
+          "startDate",
+          "statusId",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "statusId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.GetPaginationResponse.Response": {
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Domain.API.Interfaces.IPagination"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Private.Scrutiny.GetPaginationResponse.Data"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.SignResponse": {
+        "required": [
+          "fileUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "fileUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.UpdateDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Scrutiny.UploadImageResponse": {
+        "required": [
+          "imageUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.AddDto": {
+        "required": [
+          "position"
+        ],
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.AddResponse": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.GetByIdResponse.CandidacyData": {
+        "required": [
+          "candidacyType",
+          "candidacyTypeId",
+          "id",
+          "lastName",
+          "name",
+          "scrutinyId",
+          "slateId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scrutinyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "candidacyTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "candidacyType": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetByIdResponse.CandidacyTypeData"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.GetByIdResponse.CandidacyTypeData": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.GetByIdResponse.Data": {
+        "required": [
+          "candidacies",
+          "id",
+          "position",
+          "scrutinyId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scrutinyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "candidacies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetByIdResponse.CandidacyData"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.GetByIdResponse.Response": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetByIdResponse.Data"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.GetPaginationResponse.Data": {
+        "required": [
+          "countCandidacies",
+          "id",
+          "position",
+          "scrutinyId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scrutinyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "countCandidacies": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstCandidacy": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetPaginationResponse.FirstCandidacyData"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.GetPaginationResponse.FirstCandidacyData": {
+        "required": [
+          "candidacyTypeId",
+          "id",
+          "lastName",
+          "name",
+          "scrutinyId",
+          "slateId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scrutinyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "candidacyTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.GetPaginationResponse.Response": {
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Domain.API.Interfaces.IPagination"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlate.GetPaginationResponse.Data"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlate.UpdateDto": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlateCandidacy.AddDto": {
+        "required": [
+          "candidacyTypeId",
+          "lastName",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "candidacyTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlateCandidacy.AddResponse": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlateCandidacy.GetByIdResponse.CandidacyTypeData": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlateCandidacy.GetByIdResponse.Data": {
+        "required": [
+          "candidacyType",
+          "candidacyTypeId",
+          "id",
+          "lastName",
+          "name",
+          "scrutinyId",
+          "slateId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scrutinyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "candidacyTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "candidacyType": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.GetByIdResponse.CandidacyTypeData"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlateCandidacy.GetByIdResponse.Response": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.GetByIdResponse.Data"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlateCandidacy.GetPaginationResponse.Data": {
+        "required": [
+          "candidacyTypeId",
+          "candidacyTypePosition",
+          "id",
+          "lastName",
+          "name",
+          "scrutinyId",
+          "slateId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scrutinyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "slateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "candidacyTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "candidacyTypePosition": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlateCandidacy.GetPaginationResponse.Response": {
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Domain.API.Interfaces.IPagination"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Private.ScrutinySlateCandidacy.GetPaginationResponse.Data"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlateCandidacy.UpdateDto": {
+        "type": "object",
+        "properties": {
+          "candidacyTypeId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.ScrutinySlateCandidacy.UploadImageResponse": {
+        "required": [
+          "imageUrl"
+        ],
+        "type": "object",
+        "properties": {
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Student.AddDto": {
+        "required": [
+          "lastName",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Student.AddResponse": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Student.EditDto": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "graduated": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Student.GetByIdResponse.Data": {
+        "required": [
+          "createdAt",
+          "graduated",
+          "id",
+          "lastName",
+          "name",
+          "registrationNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "registrationNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "graduated": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Student.GetByIdResponse.Response": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.Student.GetByIdResponse.Data"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Student.GetPaginationResponse.Data": {
+        "required": [
+          "graduated",
+          "id",
+          "lastName",
+          "name",
+          "registrationNumber"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "registrationNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "graduated": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.Student.GetPaginationResponse.Response": {
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Domain.API.Interfaces.IPagination"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Private.Student.GetPaginationResponse.Data"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.User.AddDto": {
+        "required": [
+          "password",
+          "userName",
+          "userRoleId"
+        ],
+        "type": "object",
+        "properties": {
+          "userRoleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "studentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.User.AddResponse": {
+        "required": [
+          "id"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.User.GetByIdResponse.Data": {
+        "required": [
+          "active",
+          "createdAt",
+          "id",
+          "userName",
+          "userRoleId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userRoleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "studentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.User.GetByIdResponse.Response": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Domain.Controller.Private.User.GetByIdResponse.Data"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.User.GetPaginationResponse.Data": {
+        "required": [
+          "active",
+          "id",
+          "userName",
+          "userRoleId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "userRoleId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.User.GetPaginationResponse.Response": {
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Domain.API.Interfaces.IPagination"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Private.User.GetPaginationResponse.Data"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Private.User.UpdateDto": {
+        "type": "object",
+        "properties": {
+          "userRoleId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "studentId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "userName": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "active": {
+            "type": "boolean",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.CandidacyType.GetPaginationResponse.Data": {
+        "required": [
+          "id",
+          "name",
+          "position"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.CandidacyType.GetPaginationResponse.Response": {
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Domain.API.Interfaces.IPagination"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Public.CandidacyType.GetPaginationResponse.Data"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.Scrutiny.GetByIdResponse.CandidacyData": {
+        "required": [
+          "candidacyTypeId",
+          "lastName",
+          "name",
+          "slateId"
+        ],
+        "type": "object",
+        "properties": {
+          "slateId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "candidacyTypeId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "lastName": {
+            "type": "string",
+            "nullable": true
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.Scrutiny.GetByIdResponse.Data": {
+        "required": [
+          "description",
+          "endDate",
+          "id",
+          "slates",
+          "startDate",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "slates": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetByIdResponse.SlateData"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.Scrutiny.GetByIdResponse.Response": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetByIdResponse.Data"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.Scrutiny.GetByIdResponse.SlateData": {
+        "required": [
+          "candidacies",
+          "id",
+          "position",
+          "scrutinyId"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "scrutinyId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "position": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "candidacies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetByIdResponse.CandidacyData"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.Scrutiny.GetVoteStatusResponse.Data": {
+        "required": [
+          "hasVoted"
+        ],
+        "type": "object",
+        "properties": {
+          "hasVoted": {
+            "type": "boolean"
+          },
+          "slateId": {
+            "type": "string",
+            "format": "uuid",
+            "nullable": true
+          },
+          "voteDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.Scrutiny.GetVoteStatusResponse.Response": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "data": {
+            "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetVoteStatusResponse.Data"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.Scrutiny.GetPaginationResponse.Data": {
+        "required": [
+          "description",
+          "endDate",
+          "id",
+          "startDate",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "startDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "endDate": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "imageUrl": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.Scrutiny.GetPaginationResponse.Response": {
+        "required": [
+          "data",
+          "pagination"
+        ],
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean"
+          },
+          "pagination": {
+            "$ref": "#/components/schemas/Domain.API.Interfaces.IPagination"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Domain.Controller.Public.Scrutiny.GetPaginationResponse.Data"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Controller.Public.Scrutiny.PostVoteBody": {
+        "required": [
+          "slateId"
+        ],
+        "type": "object",
+        "properties": {
+          "slateId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Domain.Models.EScrutinyStatus": {
+        "enum": [
+          1,
+          2,
+          3,
+          4
+        ],
+        "type": "integer",
+        "format": "int32"
+      },
+      "Domain.Models.EUserRole": {
+        "enum": [
+          1,
+          2
+        ],
+        "type": "integer",
+        "format": "int32"
+      }
+    },
+    "securitySchemes": {
+      "UserScheme": {
+        "type": "http",
+        "description": "Token de usuario.",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

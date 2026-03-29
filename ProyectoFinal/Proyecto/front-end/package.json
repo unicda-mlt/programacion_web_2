@@ -3,25 +3,36 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "cross-env NODE_EXTRA_CA_CERTS=\"./localhost.pem\" next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "generate:api": "openapi-typescript https://localhost:7192/swagger/v1/swagger.json --insecure -o src/lib/api/schema.d.ts"
   },
   "dependencies": {
+    "@tanstack/react-table": "8.21.3",
+    "date-fns": "4.1.0",
+    "jose": "6.2.2",
+    "lucide-react": "1.7.0",
     "next": "16.2.1",
+    "openapi-fetch": "0.17.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "react-hook-form": "7.72.0",
+    "sonner": "2.0.7",
+    "zod": "4.3.6"
   },
   "devDependencies": {
-    "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@tailwindcss/postcss": "4.2.2",
+    "@types/node": "24.12.0",
+    "@types/react": "19.2.14",
+    "@types/react-dom": "19.2.3",
     "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
+    "cross-env": "10.1.0",
+    "eslint": "9.39.4",
     "eslint-config-next": "16.2.1",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "openapi-typescript": "7.13.0",
+    "tailwindcss": "4.2.2",
+    "typescript": "5.9.3"
   }
 }
