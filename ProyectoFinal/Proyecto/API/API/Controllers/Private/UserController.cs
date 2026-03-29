@@ -22,8 +22,8 @@ namespace API.Controllers.Private
         [HttpGet("{id}")]
         [ProducesResponseType<GetByIdResponse.Response>(StatusCodes.Status200OK)]
         [SwaggerOperation(
-            Summary = "Obtener informaicón de un usuario.",
-            Description = "Devuelve la información de un usuario identificado por su id."
+            Summary = "Obtener información de un usuario.",
+            Description = "Devuelve la información de un usuario identificado por su id. Si el usuario tiene rol de estudiante, incluye el id del estudiante asociado."
         )]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -64,8 +64,8 @@ namespace API.Controllers.Private
         [ProducesResponseType<GetPaginationResponse.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType<BadRequestResponse>(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Obtener una lista de usuarios",
-            Description = "Devuelve una lista de todos los usuarios registrados en el sistema."
+            Summary = "Obtener una lista paginada de usuarios",
+            Description = "Devuelve una lista paginada de usuarios registrados en el sistema, incluyendo su rol y estado activo."
         )]
         public async Task<IActionResult> GetPagination([FromQuery] PaginationQueryParams query)
         {
@@ -98,7 +98,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<AddResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Agregar un nuevo usuario",
-            Description = "Crea un nuevo usuario en el sistema."
+            Description = "Crea un nuevo usuario en el sistema. Si el rol es ESTUDIANTE, debe enviarse el id del estudiante y el nombre de usuario se establece automáticamente con el número de matrícula. Valida que el rol exista, que el nombre de usuario sea único y, si aplica, que el estudiante exista y no tenga usuario asignado."
         )]
         public async Task<IActionResult> Add([FromBody] AddDto data)
         {
@@ -188,7 +188,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Actualizar un usuario",
-            Description = "Actualiza un usuario existente en el sistema."
+            Description = "Actualiza parcialmente un usuario existente. Si se cambia el rol a ESTUDIANTE, vincula el estudiante indicado y adopta su número de matrícula como nombre de usuario. Si el rol anterior era ESTUDIANTE y cambia a otro, desvincula al estudiante previo. Valida unicidad de nombre de usuario y existencia del estudiante si aplica."
         )]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateDto data)
         {

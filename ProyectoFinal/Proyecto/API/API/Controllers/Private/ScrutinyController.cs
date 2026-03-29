@@ -30,8 +30,8 @@ namespace API.Controllers.Private
         [HttpGet("{id}")]
         [ProducesResponseType<GetByIdResponse.Response>(StatusCodes.Status200OK)]
         [SwaggerOperation(
-            Summary = "Obtener informaicón de un escrutinio.",
-            Description = "Devuelve la información de un escrutinio identificado por su id."
+            Summary = "Obtener información de un escrutinio.",
+            Description = "Devuelve la información de un escrutinio identificado por su id, incluyendo su estado y, si fue firmado, la URL del archivo de firma."
         )]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -74,8 +74,8 @@ namespace API.Controllers.Private
         [ProducesResponseType<GetPaginationResponse.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType<BadRequestResponse>(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Obtener una lista de escrutinios",
-            Description = "Devuelve una lista de todos los escrutinios registrados en el sistema."
+            Summary = "Obtener una lista paginada de escrutinios",
+            Description = "Devuelve una lista paginada de escrutinios. Permite filtrar opcionalmente por estado (statusId), fecha de inicio desde (fromDate) y fecha de fin hasta (toDate)."
         )]
         public async Task<IActionResult> GetPagination([FromQuery] GetPaginationQuery query)
         {
@@ -125,7 +125,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<AddResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Agregar un nuevo escrutinio",
-            Description = "Crea un nuevo escrutinio en el sistema."
+            Description = "Crea un nuevo escrutinio en el sistema. El escrutinio se registra con estado PENDIENTE automáticamente."
         )]
         public async Task<IActionResult> Add([FromBody] AddDto data)
         {
@@ -148,7 +148,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Actualizar un escrutinio",
-            Description = "Actualiza un escrutinio existente en el sistema."
+            Description = "Actualiza parcialmente los datos de un escrutinio existente. Solo se puede actualizar si el escrutinio se encuentra en estado PENDIENTE."
         )]
         public async Task<IActionResult> Update(Guid id, [FromBody] UpdateDto data)
         {
@@ -183,7 +183,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<UploadImageResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Actualizar imagen de portada de un escrutinio",
-            Description = "Actualiza imagen de portada de un escrutinio registrado en el sistema."
+            Description = "Sube y establece la imagen de portada de un escrutinio. Reemplaza la imagen anterior si existía. Solo se permite cuando el escrutinio está en estado PENDIENTE."
         )]
         public async Task<IActionResult> UpdateImage(Guid id, IFormFile file)
         {
@@ -232,8 +232,8 @@ namespace API.Controllers.Private
         [HttpPatch("{id}/open")]
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
-            Summary = "Actualizar un escrutinio",
-            Description = "Actualiza un escrutinio existente en el sistema."
+            Summary = "Aperturar un escrutinio",
+            Description = "Cambia el estado del escrutinio de PENDIENTE a ABIERTO. Requiere que el escrutinio tenga al menos 2 planchas registradas."
         )]
         public async Task<IActionResult> Open(Guid id)
         {
@@ -276,7 +276,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Cerrar un escrutinio",
-            Description = "Cierra un escrutinio que su estado este pendiente."
+            Description = "Cambia el estado del escrutinio de ABIERTO a CERRADO. Solo se puede cerrar si el escrutinio se encuentra en estado ABIERTO."
         )]
         public async Task<IActionResult> Close(Guid id)
         {
@@ -308,7 +308,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<SignResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Firmar un escrutinio",
-            Description = "Firma un escrutinio que este en estado cerrado."
+            Description = "Sube un archivo de firma y cambia el estado del escrutinio de CERRADO a FIRMADO. Acepta archivos .jpg, .png o .pdf con un tamaño máximo de 2 MB. Solo se puede firmar si el escrutinio está en estado CERRADO."
         )]
         public async Task<IActionResult> Sign(Guid id, IFormFile file)
         {

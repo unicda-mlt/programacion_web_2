@@ -32,8 +32,8 @@ namespace API.Controllers.Private
         [HttpGet("{id}")]
         [ProducesResponseType<GetByIdResponse.Response>(StatusCodes.Status200OK)]
         [SwaggerOperation(
-            Summary = "Obtener informaicón de una candidatura.",
-            Description = "Devuelve la información de una candidatura identificado por su id."
+            Summary = "Obtener información de una candidatura.",
+            Description = "Devuelve la información de una candidatura identificada por su id dentro de una plancha, incluyendo el tipo de candidatura asociado."
         )]
         public async Task<IActionResult> GetById(Guid scrutinyId, Guid slateId, Guid id)
         {
@@ -137,7 +137,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<AddResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Agregar una nueva candidatura",
-            Description = "Crea una nueva candidatura en una plancha de un escrutinio."
+            Description = "Crea una nueva candidatura en una plancha de un escrutinio. Valida que el escrutinio esté en estado PENDIENTE, que la plancha pertenezca al escrutinio y que el tipo de candidatura exista."
         )]
         public async Task<IActionResult> Add(Guid scrutinyId, Guid slateId, [FromBody] AddDto data)
         {
@@ -196,7 +196,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Actualizar una candidatura",
-            Description = "Actualiza una candidatura existente en una plancha de un escrutinio."
+            Description = "Actualiza parcialmente una candidatura existente en una plancha. Solo se permite si el escrutinio está en estado PENDIENTE. Si se envía un nuevo tipo de candidatura, valida que exista."
         )]
         public async Task<IActionResult> Update(Guid scrutinyId, Guid slateId, Guid id, [FromBody] UpdateDto data)
         {
@@ -262,7 +262,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<UploadImageResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Actualizar imagen de una candidatura",
-            Description = "Actualiza imagen de una candidatura existente en una plancha de un escrutinio."
+            Description = "Sube y establece la imagen de una candidatura. Reemplaza la imagen anterior si existía. Solo se permite cuando el escrutinio está en estado PENDIENTE."
         )]
         public async Task<IActionResult> UpdateImage(Guid scrutinyId, Guid slateId, Guid id, IFormFile file)
         {

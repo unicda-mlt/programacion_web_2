@@ -83,7 +83,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<AddResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Agregar un nuevo tipo de candidatura",
-            Description = "Crea un nuevo tipo de candidatura en el sistema."
+            Description = "Crea un nuevo tipo de candidatura en el sistema. El nombre y la posición deben ser únicos (el nombre se compara sin distinción de mayúsculas/minúsculas ni espacios)."
         )]
         public async Task<IActionResult> Add([FromBody] AddDto data)
         {
@@ -133,7 +133,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Editar información de tipo de candidatura",
-            Description = "Edita la información de un tipo de candidatura identificado por su id."
+            Description = "Actualiza parcialmente el nombre y/o posición de un tipo de candidatura. Valida que el nombre y la posición sean únicos entre los demás tipos existentes."
         )]
         public async Task<IActionResult> Update(short id, [FromBody] UpdateDto data)
         {

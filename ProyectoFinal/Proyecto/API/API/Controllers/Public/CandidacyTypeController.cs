@@ -18,8 +18,8 @@ namespace API.Controllers.Public
         [ProducesResponseType<GetPaginationResponse.Response>(StatusCodes.Status200OK)]
         [ProducesResponseType<BadRequestResponse>(StatusCodes.Status500InternalServerError)]
         [SwaggerOperation(
-            Summary = "Obtener una lista de tipos de candidatura",
-            Description = "Devuelve una lista de todos los tipos de candidatura registrados en el sistema."
+            Summary = "Obtener una lista paginada de tipos de candidatura",
+            Description = "Devuelve una lista paginada de todos los tipos de candidatura registrados en el sistema. Endpoint público, no requiere autenticación."
         )]
         public async Task<IActionResult> GetPagination([FromQuery] PaginationQueryParams query)
         {

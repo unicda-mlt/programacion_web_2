@@ -30,8 +30,8 @@ namespace API.Controllers.Public
         [AllowAnonymous]
         [ProducesResponseType<GetByIdResponse.Response>(StatusCodes.Status200OK)]
         [SwaggerOperation(
-            Summary = "Obtener informaicón de un escrutinio.",
-            Description = "Devuelve la información de un escrutinio identificado por su id. El escrutinio debe estar en estado abierto."
+            Summary = "Obtener información de un escrutinio.",
+            Description = "Devuelve la información de un escrutinio junto con sus planchas y candidaturas. Solo retorna datos si el escrutinio está disponible para votar (estado ABIERTO y dentro de su rango de fechas)."
         )]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -143,7 +143,7 @@ namespace API.Controllers.Public
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Votar por una plancha.",
-            Description = "Vota por la plancha de un escrutinio abierto."
+            Description = "Registra el voto del estudiante autenticado por una plancha del escrutinio. Requiere autenticación con rol ESTUDIANTE. Valida que el escrutinio esté disponible para votar, que el usuario tenga un estudiante vinculado, que la plancha pertenezca al escrutinio y que el estudiante no haya votado previamente."
         )]
         public async Task<IActionResult> Vote(Guid id, [FromBody] PostVoteBody body)
         {

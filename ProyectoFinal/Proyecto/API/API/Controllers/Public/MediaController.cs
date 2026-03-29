@@ -17,7 +17,7 @@ namespace API.Controllers.Public
         [HttpGet("{filePath}")]
         [SwaggerOperation(
             Summary = "Obtener un archivo multimedia.",
-            Description = "Este endpoint no descarga el archivo, se recomienda su uso para obtener imagenes."
+            Description = "Sirve el archivo en línea con el tipo de contenido (MIME) correspondiente. No fuerza descarga. Recomendado para mostrar imágenes directamente en el navegador. Acepta el path codificado en URL."
         )]
         public IActionResult GetImage(string filePath)
         {
@@ -49,8 +49,8 @@ namespace API.Controllers.Public
         [AllowAnonymous]
         [HttpGet("download/{filePath}")]
         [SwaggerOperation(
-            Summary = "Descarga un archivo multimedia.",
-            Description = "Descargar un archivo multimedia."
+            Summary = "Descargar un archivo multimedia.",
+            Description = "Fuerza la descarga del archivo con Content-Disposition: attachment, usando el nombre real del archivo. Acepta el path codificado en URL."
         )]
         public IActionResult DownloadFile(string filePath)
         {

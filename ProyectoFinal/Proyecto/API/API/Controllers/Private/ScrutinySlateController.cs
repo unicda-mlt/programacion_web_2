@@ -22,8 +22,8 @@ namespace API.Controllers.Private
         [HttpGet("{id}")]
         [ProducesResponseType<GetByIdResponse.Response>(StatusCodes.Status200OK)]
         [SwaggerOperation(
-            Summary = "Obtener informaicón de una plancha.",
-            Description = "Devuelve la información de una plancha identificado por su id."
+            Summary = "Obtener información de una plancha.",
+            Description = "Devuelve la información de una plancha identificada por su id dentro de un escrutinio, incluyendo todas sus candidaturas con su tipo de candidatura."
         )]
         public async Task<IActionResult> GetById(Guid scrutinyId, Guid id)
         {
@@ -121,7 +121,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<AddResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Agregar una nueva plancha",
-            Description = "Crea un nueva plancha a un escrutinio."
+            Description = "Crea una nueva plancha en un escrutinio. La posición debe ser única dentro del escrutinio. Solo se puede agregar si el escrutinio está en estado PENDIENTE."
         )]
         public async Task<IActionResult> Add(Guid scrutinyId, [FromBody] AddDto data)
         {
@@ -166,7 +166,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<OkResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Actualizar una plancha",
-            Description = "Actualiza una plancha existente en un escrutinio."
+            Description = "Actualiza la posición de una plancha existente dentro de un escrutinio. Solo se puede modificar si el escrutinio está en estado PENDIENTE."
         )]
         public async Task<IActionResult> Update(Guid scrutinyId, Guid id, [FromBody] UpdateDto data)
         {

@@ -19,8 +19,8 @@ namespace API.Controllers.Private
         [HttpGet("{id}")]
         [ProducesResponseType<GetByIdResponse.Response>(StatusCodes.Status200OK)]
         [SwaggerOperation(
-              Summary = "Obtener informaicón de un estudiante.",
-              Description = "Devuelve la información de un estudiante identificado por su id."
+              Summary = "Obtener información de un estudiante.",
+              Description = "Devuelve la información de un estudiante identificado por su id, incluyendo su número de matrícula, nombre, apellido, estado de graduación y el id de usuario asociado si lo tiene."
           )]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -90,7 +90,7 @@ namespace API.Controllers.Private
         [ProducesResponseType<AddResponse>(StatusCodes.Status200OK)]
         [SwaggerOperation(
             Summary = "Agregar un nuevo estudiante",
-            Description = "Crea un nuevo estudiante en el sistema."
+            Description = "Crea un nuevo estudiante en el sistema. El número de matrícula se genera automáticamente. El estudiante se crea con el estado de graduado en falso."
         )]
         public async Task<IActionResult> Add([FromBody] AddDto data)
         {
