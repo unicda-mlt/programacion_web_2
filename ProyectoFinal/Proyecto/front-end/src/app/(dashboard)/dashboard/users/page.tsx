@@ -24,7 +24,7 @@ interface FormState {
   active: boolean;
 }
 
-const emptyForm: FormState = { userName: '', password: '', userRoleId: '2', active: true };
+const emptyForm: FormState = { userName: '', password: '', userRoleId: '1', active: true };
 
 export default function UsersPage() {
   const { data, total, page, setPage, loading, error, create, update } = useResource<User>({ path: '/api/users' });
@@ -100,7 +100,7 @@ export default function UsersPage() {
   return (
     <div>
       <h1 className="text-2xl font-bold text-zinc-900">Users</h1>
-      <p className="mt-1 text-sm text-zinc-500">Manage system users</p>
+      <p className="mt-1 text-sm text-zinc-500">Manage admin users. To create a student user, go to the Students page.</p>
       <div className="mt-6">
         <DataTable
           columns={[
@@ -181,7 +181,7 @@ export default function UsersPage() {
                 className="mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               >
                 <option value="1">ADMIN</option>
-                <option value="2">STUDENT</option>
+                {modal === 'edit' && <option value="2">STUDENT</option>}
               </select>
             </div>
             <div className="flex items-center gap-2">

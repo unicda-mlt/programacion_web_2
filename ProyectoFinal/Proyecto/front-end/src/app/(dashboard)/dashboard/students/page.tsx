@@ -5,10 +5,12 @@ import { DataTable } from '@/components/dashboard/table/DataTable';
 import { Modal } from '@/components/shared/Modal';
 import { toast } from 'sonner';
 import { parseProblemDetails } from '@/lib/api/errors';
-import { Plus, Pencil } from 'lucide-react';
+import { apiClient } from '@/lib/api/client';
+import { Plus, Pencil, UserPlus } from 'lucide-react';
 
 interface Student {
   id: string;
+  userId?: string | null;
   name?: string;
   lastName?: string;
   registrationNumber?: string;
@@ -26,12 +28,22 @@ interface EditForm {
   graduated: boolean;
 }
 
+interface UserForm {
+  userName: string;
+  password: string;
+}
+
+type UntypedClient = {
+  POST: (path: string, init: object) => Promise<{ data: unknown; response: Response }>;
+};
+
 export default function StudentsPage() {
-  const { data, total, page, setPage, loading, error, create, update } = useResource<Student>({ path: '/api/students' });
-  const [modal, setModal] = useState<'create' | 'edit' | null>(null);
+  const { data, total, page, setPage, loading, error, create, update, refetch } = useResource<Student>({ path: '/api/students' });
+  const [modal, setModal] = useState<'create' | 'edit' | 'assign-user' | null>(null);
   const [editing, setEditing] = useState<Student | null>(null);
   const [createForm, setCreateForm] = useState<CreateForm>({ name: '', lastName: '' });
   const [editForm, setEditForm] = useState<EditForm>({ name: '', lastName: '', graduated: false });
+  const [userForm, setUserForm] = useState<UserForm>({ userName: '', password: '' });
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -46,6 +58,13 @@ export default function StudentsPage() {
     setEditing(row);
     setFormError('');
     setModal('edit');
+  }
+
+  function openAssignUser(row: Student) {
+    setUserForm({ userName: '', password: '' });
+    setEditing(row);
+    setFormError('');
+    setModal('assign-user');
   }
 
   function close() {
@@ -64,6 +83,38 @@ export default function StudentsPage() {
       const pd = parseProblemDetails(err);
       setFormError(pd.title ?? 'Failed to save.');
       toast.error(pd.title ?? 'Failed to save.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function handleAssignUser(e: React.FormEvent) {
+    e.preventDefault();
+    if (!editing) return;
+    setSaving(true);
+    setFormError('');
+    try {
+      const client = apiClient as unknown as UntypedClient;
+      const { response } = await client.POST('/api/users', {
+        body: {
+          userRoleId: 2,
+          studentId: editing.id,
+          userName: userForm.userName,
+          password: userForm.password,
+          active: true,
+        },
+      });
+      if (!response.ok) {
+        const body = await response.json().catch(() => ({}));
+        throw parseProblemDetails(body);
+      }
+      toast.success('User created for student');
+      await refetch();
+      close();
+    } catch (err) {
+      const pd = parseProblemDetails(err);
+      setFormError(pd.title ?? 'Failed to create user.');
+      toast.error(pd.title ?? 'Failed to create user.');
     } finally {
       setSaving(false);
     }
@@ -118,12 +169,24 @@ export default function StudentsPage() {
               key: 'actions',
               label: '',
               render: (row) => (
-                <button
-                  onClick={() => openEdit(row)}
-                  className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"
-                >
-                  <Pencil className="h-3 w-3" /> Edit
-                </button>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => openEdit(row)}
+                    className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-zinc-500 hover:bg-zinc-100 hover:text-zinc-800"
+                  >
+                    <Pencil className="h-3 w-3" /> Edit
+                  </button>
+                  {row.userId ? (
+                    <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-700">Has user</span>
+                  ) : (
+                    <button
+                      onClick={() => openAssignUser(row)}
+                      className="flex items-center gap-1 rounded-md px-2 py-1 text-xs text-blue-600 hover:bg-blue-50 hover:text-blue-800"
+                    >
+                      <UserPlus className="h-3 w-3" /> Create User
+                    </button>
+                  )}
+                </div>
               ),
             },
           ]}
@@ -214,6 +277,46 @@ export default function StudentsPage() {
               <button type="button" onClick={close} className="rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50">Cancel</button>
               <button type="submit" disabled={saving} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
                 {saving ? 'Saving…' : 'Save'}
+              </button>
+            </div>
+          </form>
+        </Modal>
+      )}
+
+      {modal === 'assign-user' && editing && (
+        <Modal title={`Create User for ${editing.name} ${editing.lastName}`} onClose={close}>
+          <form onSubmit={handleAssignUser} className="space-y-4">
+            <p className="text-sm text-zinc-500">
+              This will create a student account linked to <strong>{editing.name} {editing.lastName}</strong> ({editing.registrationNumber}).
+            </p>
+            <div>
+              <label className="block text-sm font-medium text-zinc-700">Username</label>
+              <input
+                type="text"
+                value={userForm.userName}
+                onChange={e => setUserForm(f => ({ ...f, userName: e.target.value }))}
+                required
+                className="mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-zinc-700">Password</label>
+              <input
+                type="password"
+                value={userForm.password}
+                onChange={e => setUserForm(f => ({ ...f, password: e.target.value }))}
+                required
+                autoComplete="new-password"
+                className="mt-1 block w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              />
+            </div>
+            {formError && (
+              <p className="rounded-lg bg-red-50 border border-red-200 px-3 py-2 text-sm text-red-600">{formError}</p>
+            )}
+            <div className="flex justify-end gap-3 pt-2">
+              <button type="button" onClick={close} className="rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:bg-zinc-50">Cancel</button>
+              <button type="submit" disabled={saving} className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-50">
+                {saving ? 'Creating…' : 'Create User'}
               </button>
             </div>
           </form>
