@@ -18,6 +18,8 @@ namespace Data.Repositories.Interfaces
 
         Task DeleteWhere(Expression<Func<Entity, bool>> filter);
 
+        Task<int> Count(Expression<Func<Entity, bool>> filter);
+
         Task<Entity?> GetOneByFilter(Expression<Func<Entity, bool>> filter);
 
         Task<Entity?> GetOneByFilter(Expression<Func<Entity, bool>> filter, string include);
@@ -25,6 +27,8 @@ namespace Data.Repositories.Interfaces
         Task<Entity?> GetOneByFilter(Expression<Func<Entity, bool>> filter, string[] include);
 
         Task<Entity?> GetOneByFilter(Expression<Func<Entity, bool>> filter, Expression<Func<Entity, object>> orderByDescending);
+
+        Task<Entity?> GetOneByFilter(Expression<Func<Entity, object>> orderByAscending);
 
         Task<Entity?> GetById(IdType Id);
 

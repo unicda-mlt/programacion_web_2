@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation';
 import { SidebarNavItem } from './SidebarNavItem';
 import { SidebarGroup } from './SidebarGroup';
 import {
-  LayoutDashboard, Users, GraduationCap, Vote, ListChecks, ChevronLeft, ChevronRight, LogOut,
+  LayoutDashboard, Users, GraduationCap, Vote, ListChecks, ChevronLeft, ChevronRight, LogOut, Activity,
 } from 'lucide-react';
 import type { Session } from '@/types/auth';
 
@@ -25,6 +25,7 @@ const navGroups = [
     label: 'Elections',
     items: [
       { href: '/dashboard/scrutinies', label: 'Scrutinies', icon: Vote },
+      { href: '/dashboard/vote-status', label: 'Live Vote Status', icon: Activity },
       { href: '/dashboard/candidacy-types', label: 'Candidacy Types', icon: ListChecks },
     ],
   },

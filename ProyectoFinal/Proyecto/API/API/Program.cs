@@ -1,5 +1,7 @@
 using API;
+using API.Hubs;
 using API.Middlewares;
+using API.Services;
 using Business;
 using Business.Authentication;
 using Data;
@@ -33,26 +35,13 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowLocalHostOrigin", policy =>
     {
         policy.SetIsOriginAllowed(origin =>
-            new Uri(origin).Host == "localhost" ||
-            new Uri(origin).Host == "127.0.0.1")
-          .AllowAnyHeader()
-          .AllowAnyMethod();
-
-        policy.WithOrigins("http://127.0.0.1:5000")
+            {
+                var uri = new Uri(origin);
+                return uri.Host == "localhost" || uri.Host == "127.0.0.1";
+            })
             .AllowAnyHeader()
-            .AllowAnyMethod();
-
-        policy.WithOrigins("http://127.0.0.1:5500")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-
-        policy.WithOrigins("http://localhost:5000")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-
-        policy.WithOrigins("http://localhost:5500")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
@@ -65,6 +54,15 @@ builder.Services.Configure<RouteOptions>(options =>
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
+
+// Add SignalR
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = builder.Environment.IsDevelopment();
+});
+
+// Add background service for vote status broadcasting
+builder.Services.AddHostedService<VoteStatusBroadcastService>();
 
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -99,7 +97,6 @@ var app = builder.Build();
 app.UseWhen(context =>
 {
     var path = context.Request.Path;
-    
     return path.StartsWithSegments("/api");
 }, appBuilder =>
 {
@@ -130,8 +127,12 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Map SignalR hub
+app.MapHub<VoteStatusHub>("/hubs/vote-status");
 
 app.Run();

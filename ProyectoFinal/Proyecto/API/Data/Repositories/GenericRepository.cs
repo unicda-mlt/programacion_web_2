@@ -84,6 +84,11 @@ namespace Data.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<int> Count(Expression<Func<Entity, bool>> filter)
+        {
+            return await _set.Where(filter).CountAsync();
+        }
+
         public async Task<Entity?> GetOneByFilter(Expression<Func<Entity, bool>> filter)
         {
             return await _set.Where(filter).FirstOrDefaultAsync();
@@ -109,6 +114,11 @@ namespace Data.Repositories
         public async Task<Entity?> GetOneByFilter(Expression<Func<Entity, bool>> filter, Expression<Func<Entity, object>> orderByDescending)
         {
             return await _set.Where(filter).OrderByDescending(orderByDescending).FirstOrDefaultAsync();
+        }
+
+        public async Task<Entity?> GetOneByFilter(Expression<Func<Entity, object>> orderByAscending)
+        {
+            return await _set.OrderBy(orderByAscending).FirstOrDefaultAsync();
         }
 
         public async Task<Entity?> GetById(IdType Id)

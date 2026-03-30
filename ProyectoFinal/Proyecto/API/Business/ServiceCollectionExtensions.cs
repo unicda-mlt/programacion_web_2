@@ -45,6 +45,25 @@ namespace Business
                     IssuerSigningKey = new SymmetricSecurityKey(userKey),
                     ValidateLifetime = true
                 };
+
+                // SignalR WebSocket/SSE connections cannot send custom headers in browsers,
+                // so the token is passed as an access_token query parameter.
+                // This hook tells the JWT Bearer middleware to read it from there.
+                opt.Events = new Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        var path = context.HttpContext.Request.Path;
+
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             services.AddSingleton<UploadHandler>();

@@ -10,6 +10,7 @@
     "generate:api": "openapi-typescript https://localhost:7192/swagger/v1/swagger.json --insecure -o src/lib/api/schema.d.ts"
   },
   "dependencies": {
+    "@microsoft/signalr": "10.0.0",
     "@tanstack/react-table": "8.21.3",
     "date-fns": "4.1.0",
     "jose": "6.2.2",
