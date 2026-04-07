@@ -44,6 +44,7 @@ export default function ScrutiniesPage() {
   const [editing, setEditing] = useState<Scrutiny | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [saving, setSaving] = useState(false);
+  const [loadingDetail, setLoadingDetail] = useState(false);
   const [formError, setFormError] = useState('');
 
   function openCreate() {
@@ -53,16 +54,34 @@ export default function ScrutiniesPage() {
     setModal('create');
   }
 
-  function openEdit(row: Scrutiny) {
+  async function openEdit(row: Scrutiny) {
+    setEditing(row);
+    setFormError('');
     setForm({
       title: row.title ?? '',
       description: '',
       startDate: toDatetimeLocal(row.startDate),
       endDate: toDatetimeLocal(row.endDate),
     });
-    setEditing(row);
-    setFormError('');
     setModal('edit');
+    setLoadingDetail(true);
+    try {
+      const res = await fetch(`/api/proxy/api/scrutinies/${row.id}`);
+      const body = await res.json().catch(() => null);
+      const detail = body?.data;
+      if (detail) {
+        setForm({
+          title: detail.title ?? row.title ?? '',
+          description: detail.description ?? '',
+          startDate: toDatetimeLocal(detail.startDate ?? row.startDate),
+          endDate: toDatetimeLocal(detail.endDate ?? row.endDate),
+        });
+      }
+    } catch {
+      // modal is already open with partial data; description will remain empty
+    } finally {
+      setLoadingDetail(false);
+    }
   }
 
   function close() {
@@ -81,8 +100,8 @@ export default function ScrutiniesPage() {
     try {
       const dto: Record<string, unknown> = {
         title: form.title,
-        startDate: format(parseISO(form.startDate), 'yyyy-MM-dd HH:mm:ss'),
-        endDate: format(parseISO(form.endDate), 'yyyy-MM-dd HH:mm:ss'),
+        startDate: form.startDate.slice(0, 16) + ':00',
+        endDate: form.endDate.slice(0, 16) + ':00',
       };
       if (form.description) dto.description = form.description;
       if (modal === 'create') {
@@ -200,6 +219,15 @@ export default function ScrutiniesPage() {
 
       {(modal === 'create' || modal === 'edit') && (
         <Modal title={modal === 'create' ? 'New Scrutiny' : 'Edit Scrutiny'} onClose={close}>
+          <div className="relative">
+            {loadingDetail && (
+              <div className="absolute inset-0 z-10 flex items-center justify-center rounded-lg bg-white/70">
+                <svg className="h-6 w-6 animate-spin text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                </svg>
+              </div>
+            )}
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
               <label className="block text-sm font-medium text-zinc-700">Title</label>
@@ -250,6 +278,7 @@ export default function ScrutiniesPage() {
               </button>
             </div>
           </form>
+          </div>
         </Modal>
       )}
     </div>

@@ -15,12 +15,10 @@ interface Scrutiny {
 
 async function getRecentScrutinies(): Promise<Scrutiny[]> {
   try {
-    // Filter scrutinies that haven't ended yet (endDate >= today midnight)
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const now = new Date();
 
     const { data } = await createServerClient({ baseUrl: env.API_BASE_URL }).GET('/api/public/scrutinies', {
-      params: { query: { Page: 1, PageSize: 3, EndDate: format(today, 'yyyy-MM-dd HH:mm:ss') } },
+      params: { query: { Page: 1, PageSize: 3, FromEndDate: format(now, 'yyyy-MM-dd HH:mm:ss') } },
       cache: 'no-store',
     });
     return (data as { data?: Scrutiny[] } | undefined)?.data ?? [];

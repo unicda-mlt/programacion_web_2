@@ -97,21 +97,33 @@ namespace API.Controllers.Public
         {
             try
             {
-                if (query.FromDate != null)
+                if (query.FromStartDate != null)
                 {
-                    query.FromDate = query.FromDate.Value.Date;
+                    query.FromStartDate = query.FromStartDate.Value.Date;
                 }
 
-                if (query.ToDate != null)
+                if (query.ToStartDate != null)
                 {
-                    query.ToDate = query.ToDate.Value.Date.AddDays(1);
+                    query.ToStartDate = query.ToStartDate.Value.Date;
+                }
+
+                if (query.FromEndDate != null)
+                {
+                    query.FromEndDate = query.FromEndDate.Value.Date.AddDays(1);
+                }
+
+                if (query.ToEndDate != null)
+                {
+                    query.ToEndDate = query.ToEndDate.Value.Date.AddDays(1);
                 }
 
                 var result = await _scrutinyRepository.GetAll(
                     filter: scrutiny => (
                         scrutiny.StatusId == EScrutinyStatus.OPEN.GetValue()
-                        && (query.FromDate == null || scrutiny.StartDate >= query.FromDate)
-                        && (query.ToDate == null || scrutiny.EndDate <= query.ToDate)
+                        && (query.FromStartDate == null || scrutiny.StartDate >= query.FromStartDate)
+                        && (query.ToStartDate == null || scrutiny.StartDate >= query.ToStartDate)
+                        && (query.FromEndDate == null || scrutiny.EndDate >= query.FromEndDate)
+                        && (query.ToEndDate == null || scrutiny.EndDate <= query.ToEndDate)
                     ),
                     selector: scrutiny => scrutiny,
                     orderBy: scrutiny => scrutiny.StartDate, 
